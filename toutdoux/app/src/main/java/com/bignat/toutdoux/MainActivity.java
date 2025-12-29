@@ -8,6 +8,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
+import android.text.InputType;
+import android.widget.EditText;
+import androidx.appcompat.app.AlertDialog;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -20,6 +24,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        FloatingActionButton fab = findViewById(R.id.fabAdd);
+        fab.setOnClickListener(v -> showAddTodoDialog());
+
         recyclerView = findViewById(R.id.recyclerView);
 
         todoList = new ArrayList<>();
@@ -31,5 +38,32 @@ public class MainActivity extends AppCompatActivity {
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
+    }
+
+    private void showAddTodoDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Add New Todo");
+
+        // Input field
+        final EditText input = new EditText(this);
+        input.setInputType(InputType.TYPE_CLASS_TEXT);
+        builder.setView(input);
+
+        // Add button
+        builder.setPositiveButton("Add", (dialog, which) -> {
+            String title = input.getText().toString().trim();
+            if (!title.isEmpty()) {
+                // Add to list
+                TodoItem newItem = new TodoItem(title);
+                todoList.add(newItem);
+                adapter.notifyItemInserted(todoList.size() - 1);
+                recyclerView.scrollToPosition(todoList.size() - 1);
+            }
+        });
+
+        // Cancel button
+        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
+
+        builder.show();
     }
 }

@@ -14,6 +14,15 @@ import java.util.List;
 public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.TodoViewHolder> {
 
     private List<TodoItem> todoList;
+    private OnItemClickListener listener;
+
+    public interface OnItemClickListener {
+        void onItemClick(int position);
+    }
+
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        this.listener = listener;
+    }
 
     public TodoAdapter(List<TodoItem> todoList) {
         this.todoList = todoList;
@@ -23,7 +32,7 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.TodoViewHolder
     @Override
     public TodoViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_todo, parent, false);
-        return new TodoViewHolder(view);
+        return new TodoViewHolder(view, listener);
     }
 
     @Override
@@ -45,10 +54,19 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.TodoViewHolder
         CheckBox checkBox;
         TextView textTitle;
 
-        TodoViewHolder(View itemView) {
+        TodoViewHolder(View itemView, OnItemClickListener listener) {
             super(itemView);
             checkBox = itemView.findViewById(R.id.checkBox);
             textTitle = itemView.findViewById(R.id.textTitle);
+
+            itemView.setOnClickListener(v -> {
+                if (listener != null) {
+                    int position = getAdapterPosition();
+                    if (position != RecyclerView.NO_POSITION) {
+                        listener.onItemClick(position);
+                    }
+                }
+            });
         }
     }
 }

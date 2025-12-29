@@ -30,14 +30,16 @@ public class MainActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.recyclerView);
 
         todoList = new ArrayList<>();
-        todoList.add(new TodoItem("Item 1"));
-        todoList.add(new TodoItem("Item 2"));
-        todoList.add(new TodoItem("Item 3"));
+        for (int i = 1; i <= 10; i++) {
+            todoList.add(new TodoItem("Item " + i));
+        }
 
         adapter = new TodoAdapter(todoList);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
+
+        adapter.setOnItemClickListener(position -> showRemoveTodoDialog(position));
     }
 
     private void showAddTodoDialog() {
@@ -62,6 +64,21 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // Cancel button
+        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
+
+        builder.show();
+    }
+
+    private void showRemoveTodoDialog(int position) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Remove " + todoList.get(position).getTitle() + " ?");
+        builder.setMessage("Are you sure you want to remove this todo?");
+
+        builder.setPositiveButton("Remove", (dialog, which) -> {
+            todoList.remove(position);
+            adapter.notifyItemRemoved(position);
+        });
+
         builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
 
         builder.show();

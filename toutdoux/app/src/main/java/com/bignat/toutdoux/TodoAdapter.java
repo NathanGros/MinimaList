@@ -42,7 +42,11 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.TodoViewHolder
         holder.textTitle.setText(item.getTitle());
         holder.checkBox.setChecked(item.isCompleted());
 
-        holder.checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> item.setCompleted(isChecked));
+        holder.checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            item.setCompleted(isChecked);
+            AppDatabase db = AppDatabase.getDatabase(holder.itemView.getContext());
+            db.todoDao().update(item);   // update in database
+        });
     }
 
     @Override

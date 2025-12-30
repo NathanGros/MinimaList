@@ -1,8 +1,15 @@
 package com.bignat.toutdoux;
 
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
+@Entity(tableName = "todos")
 public class TodoItem {
-    private String title;
-    private boolean completed;
+    @PrimaryKey(autoGenerate = true)
+    public int id;
+
+    public String title;
+    public boolean completed;
 
     public TodoItem(String title) {
         this.title = title;

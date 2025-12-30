@@ -1,5 +1,6 @@
 package com.bignat.toutdoux;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,8 +17,8 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 public class MainActivity extends AppCompatActivity {
 
     RecyclerView recyclerView;
-    TodoAdapter adapter;
-    List<TodoItem> todoList;
+    TodoListAdapter adapter;
+    List<TodoList> todoLists;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,27 +28,32 @@ public class MainActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.recyclerView);
 
         AppDatabase db = AppDatabase.getDatabase(this);
-        TodoDao todoDao = db.todoDao();
-        todoList = todoDao.getAllTodos();
+        TodoListDao todoListDao = db.todoListDao();
+        todoLists = todoListDao.getAll();
 
-        adapter = new TodoAdapter(todoList, todoDao);
+        adapter = new TodoListAdapter(todoLists, todoListDao);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
 
-        adapter.setOnItemClickListener(position -> showRemoveTodoDialog(position, todoDao));
+        adapter.setOnListClickListener(todoList -> {
+            Intent intent = new Intent(this, TodoListActivity.class);
+            intent.putExtra("LIST_ID", todoList.id);
+            intent.putExtra("LIST_NAME", todoList.getTodoListTitle());
+            startActivity(intent);
+        });
 
         FloatingActionButton fab = findViewById(R.id.fabAdd);
-        fab.setOnClickListener(v -> showAddTodoDialog(todoDao));
+        fab.setOnClickListener(v -> showAddTodoListDialog(todoListDao));
 
-        ItemTouchHelper.Callback callback = new TodoItemTouchHelper(adapter);
-        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(callback);
-        itemTouchHelper.attachToRecyclerView(recyclerView);
+//        ItemTouchHelper.Callback callback = new TodoItemTouchHelper(adapter);
+//        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(callback);
+//        itemTouchHelper.attachToRecyclerView(recyclerView);
     }
 
-    private void showAddTodoDialog(TodoDao todoDao) {
+    private void showAddTodoListDialog(TodoListDao todoListDao) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Add New Todo");
+        builder.setTitle("Add New Todo List");
 
         // Input field
         final EditText input = new EditText(this);
@@ -59,13 +65,13 @@ public class MainActivity extends AppCompatActivity {
             String title = input.getText().toString().trim();
             if (!title.isEmpty()) {
                 // Add to list
-                TodoItem newItem = new TodoItem(title);
-                newItem.setOrderIndex(todoList.size());
-                long id = todoDao.insert(newItem); // Save to database
-                newItem.id = (int) id;
-                todoList.add(newItem); // Update list
-                adapter.notifyItemInserted(todoList.size() - 1);
-                recyclerView.scrollToPosition(todoList.size() - 1);
+                TodoList newList = new TodoList(title);
+                newList.setOrderIndex(todoLists.size());
+                long id = todoListDao.insert(newList); // Save to database
+                newList.id = (int) id;
+                todoLists.add(newList); // Update list
+                adapter.notifyItemInserted(todoLists.size() - 1);
+                recyclerView.scrollToPosition(todoLists.size() - 1);
             }
         });
 
@@ -75,19 +81,19 @@ public class MainActivity extends AppCompatActivity {
         builder.show();
     }
 
-    private void showRemoveTodoDialog(int position, TodoDao todoDao) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Remove " + todoList.get(position).getTitle() + " ?");
-        builder.setMessage("Are you sure you want to remove this todo?");
-
-        builder.setPositiveButton("Remove", (dialog, which) -> {
-            todoDao.delete(todoList.get(position));  // remove from DB
-            todoList.remove(position);               // remove from list
-            adapter.notifyItemRemoved(position);
-        });
-
-        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
-
-        builder.show();
-    }
+//    private void showRemoveTodoListDialog(int position, TodoListDao todoListDao) {
+//        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+//        builder.setTitle("Remove " + todoList.get(position).getTitle() + " ?");
+//        builder.setMessage("Are you sure you want to remove this todo?");
+//
+//        builder.setPositiveButton("Remove", (dialog, which) -> {
+//            todoDao.delete(todoList.get(position));  // remove from DB
+//            todoList.remove(position);               // remove from list
+//            adapter.notifyItemRemoved(position);
+//        });
+//
+//        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
+//
+//        builder.show();
+//    }
 }

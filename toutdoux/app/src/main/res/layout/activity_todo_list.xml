@@ -12,9 +12,9 @@
         android:orientation="vertical">
 
         <TextView
+            android:id="@+id/listTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="To Do Lists"
             android:gravity="center_horizontal"
             android:padding="24dp"
             android:textSize="22sp"

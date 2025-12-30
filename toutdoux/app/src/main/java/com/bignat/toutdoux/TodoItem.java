@@ -3,18 +3,21 @@ package com.bignat.toutdoux;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-@Entity(tableName = "todos")
+@Entity
 public class TodoItem {
     @PrimaryKey(autoGenerate = true)
     public int id;
+
+    public int listId;
 
     public String title;
     public boolean completed;
 
     public int orderIndex;
 
-    public TodoItem(String title) {
+    public TodoItem(String title, int listId) {
         this.title = title;
+        this.listId = listId;
         this.completed = false;
     }
 

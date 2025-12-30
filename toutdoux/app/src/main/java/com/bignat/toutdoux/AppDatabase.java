@@ -5,9 +5,10 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import android.content.Context;
 
-@Database(entities = {TodoItem.class}, version = 1)
+@Database(entities = {TodoItem.class, TodoList.class}, version = 1)
 public abstract class AppDatabase extends RoomDatabase {
-    public abstract TodoDao todoDao();
+    public abstract TodoItemDao todoDao();
+    public abstract TodoListDao todoListDao();
 
     private static AppDatabase INSTANCE;
 

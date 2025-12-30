@@ -12,7 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ToutDoux">
         <activity
-            android:name=".MainActivity"
+            android:name=".timeless_lists.TimelessListsActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -20,7 +20,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".TodoListActivity" />
+        <activity android:name=".timeless_lists.timeless_list.TimelessListActivity" />
     </application>
 
 </manifest>

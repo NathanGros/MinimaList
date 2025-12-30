@@ -1,4 +1,4 @@
-package com.bignat.toutdoux;
+package com.bignat.toutdoux.timeless_lists.timeless_list;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,13 +9,17 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bignat.toutdoux.AppDatabase;
+import com.bignat.toutdoux.R;
+import com.bignat.toutdoux.timeless_lists.timeless_list.timeless_item.TimelessItem;
+
 import java.util.List;
 
-public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.TodoViewHolder> {
+public class TimelessListAdapter extends RecyclerView.Adapter<TimelessListAdapter.TimelessViewHolder> {
 
-    private List<TodoItem> todoList;
+    private List<TimelessItem> timelessList;
     private OnItemClickListener listener;
-    private TodoItemDao todoDao;
+    private TimelessListDao timelessListDao;
 
     public interface OnItemClickListener {
         void onItemClick(int position);
@@ -25,21 +29,21 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.TodoViewHolder
         this.listener = listener;
     }
 
-    public TodoAdapter(List<TodoItem> todoList, TodoItemDao todoDao) {
-        this.todoList = todoList;
-        this.todoDao = todoDao;
+    public TimelessListAdapter(List<TimelessItem> timelessItems, TimelessListDao timelessListDao) {
+        this.timelessList = timelessItems;
+        this.timelessListDao = timelessListDao;
     }
 
     @NonNull
     @Override
-    public TodoViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_todo, parent, false);
-        return new TodoViewHolder(view, listener);
+    public TimelessViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.timeless_item, parent, false);
+        return new TimelessViewHolder(view, listener);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull TodoViewHolder holder, int position) {
-        TodoItem item = todoList.get(position);
+    public void onBindViewHolder(@NonNull TimelessViewHolder holder, int position) {
+        TimelessItem item = timelessList.get(position);
 
         holder.textTitle.setText(item.getTitle());
         holder.checkBox.setChecked(item.isCompleted());
@@ -47,34 +51,34 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.TodoViewHolder
         holder.checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
             item.setCompleted(isChecked);
             AppDatabase db = AppDatabase.getDatabase(holder.itemView.getContext());
-            db.todoDao().update(item);   // update in database
+            db.timelessListDao().update(item);   // update in database
         });
     }
 
     @Override
     public int getItemCount() {
-        return todoList.size();
+        return timelessList.size();
     }
 
     public void onItemMove(int fromPosition, int toPosition) {
-        TodoItem movedItem = todoList.remove(fromPosition);
-        todoList.add(toPosition, movedItem);
+        TimelessItem movedItem = timelessList.remove(fromPosition);
+        timelessList.add(toPosition, movedItem);
         notifyItemMoved(fromPosition, toPosition);
     }
 
     public void onDragFinished() {
-        for (int i = 0; i < todoList.size(); i++) {
-            TodoItem item = todoList.get(i);
+        for (int i = 0; i < timelessList.size(); i++) {
+            TimelessItem item = timelessList.get(i);
             item.orderIndex = i;
-            todoDao.update(item);
+            timelessListDao.update(item);
         }
     }
 
-    static class TodoViewHolder extends RecyclerView.ViewHolder {
+    static class TimelessViewHolder extends RecyclerView.ViewHolder {
         CheckBox checkBox;
         TextView textTitle;
 
-        TodoViewHolder(View itemView, OnItemClickListener listener) {
+        TimelessViewHolder(View itemView, OnItemClickListener listener) {
             super(itemView);
             checkBox = itemView.findViewById(R.id.checkBox);
             textTitle = itemView.findViewById(R.id.textTitle);

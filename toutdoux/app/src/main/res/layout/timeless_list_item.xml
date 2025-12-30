@@ -8,10 +8,10 @@
     android:layout_marginLeft="20dp"
     android:layout_marginRight="20dp"
     android:padding="5dp"
-    android:background="@drawable/todo_item_bg">
+    android:background="@drawable/list_item_bg">
 
     <TextView
-        android:id="@+id/todoListTitle"
+        android:id="@+id/TimelessListName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="18sp"

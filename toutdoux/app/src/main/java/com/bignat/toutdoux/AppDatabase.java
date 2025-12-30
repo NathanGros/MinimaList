@@ -5,10 +5,15 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import android.content.Context;
 
-@Database(entities = {TodoItem.class, TodoList.class}, version = 1)
+import com.bignat.toutdoux.timeless_lists.TimelessListsDao;
+import com.bignat.toutdoux.timeless_lists.timeless_list.TimelessList;
+import com.bignat.toutdoux.timeless_lists.timeless_list.TimelessListDao;
+import com.bignat.toutdoux.timeless_lists.timeless_list.timeless_item.TimelessItem;
+
+@Database(entities = {TimelessItem.class, TimelessList.class}, version = 1)
 public abstract class AppDatabase extends RoomDatabase {
-    public abstract TodoItemDao todoDao();
-    public abstract TodoListDao todoListDao();
+    public abstract TimelessListDao timelessListDao();
+    public abstract TimelessListsDao timelessListsDao();
 
     private static AppDatabase INSTANCE;
 

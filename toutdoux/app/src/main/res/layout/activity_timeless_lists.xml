@@ -14,7 +14,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="To Do Lists"
+            android:text="Timeless Lists"
             android:gravity="center_horizontal"
             android:padding="24dp"
             android:textSize="22sp"
@@ -33,6 +33,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="16dp"
-        android:contentDescription="Add Todo"
+        android:contentDescription="Add list"
         app:srcCompat="@android:drawable/ic_input_add"/>
 </FrameLayout>

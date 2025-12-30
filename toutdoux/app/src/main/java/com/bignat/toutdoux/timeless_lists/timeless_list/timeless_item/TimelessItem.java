@@ -1,10 +1,10 @@
-package com.bignat.toutdoux;
+package com.bignat.toutdoux.timeless_lists.timeless_list.timeless_item;
 
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 @Entity
-public class TodoItem {
+public class TimelessItem {
     @PrimaryKey(autoGenerate = true)
     public int id;
 
@@ -15,7 +15,7 @@ public class TodoItem {
 
     public int orderIndex;
 
-    public TodoItem(String title, int listId) {
+    public TimelessItem(String title, int listId) {
         this.title = title;
         this.listId = listId;
         this.completed = false;

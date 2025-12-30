@@ -1,14 +1,17 @@
-package com.bignat.toutdoux;
+package com.bignat.toutdoux.timeless_lists.timeless_list.timeless_item;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class TodoItemTouchHelper extends ItemTouchHelper.Callback {
+import com.bignat.toutdoux.R;
+import com.bignat.toutdoux.timeless_lists.timeless_list.TimelessListAdapter;
 
-    private final TodoAdapter adapter;
+public class TimelessItemTouchHelper extends ItemTouchHelper.Callback {
 
-    public TodoItemTouchHelper(TodoAdapter adapter) {
+    private final TimelessListAdapter adapter;
+
+    public TimelessItemTouchHelper(TimelessListAdapter adapter) {
         this.adapter = adapter;
     }
 
@@ -56,7 +59,7 @@ public class TodoItemTouchHelper extends ItemTouchHelper.Callback {
     ) {
         super.clearView(recyclerView, viewHolder);
 
-        viewHolder.itemView.setBackgroundResource(R.drawable.todo_item_bg);
+        viewHolder.itemView.setBackgroundResource(R.drawable.list_item_bg);
         viewHolder.itemView.animate()
                 .scaleX(1f)
                 .scaleY(1f)
@@ -76,7 +79,7 @@ public class TodoItemTouchHelper extends ItemTouchHelper.Callback {
         super.onSelectedChanged(viewHolder, actionState);
 
         if (actionState == ItemTouchHelper.ACTION_STATE_DRAG && viewHolder != null) {
-            viewHolder.itemView.setBackgroundResource(R.drawable.todo_item_bg_drag);
+            viewHolder.itemView.setBackgroundResource(R.drawable.list_item_bg_drag);
             viewHolder.itemView.animate()
                     .scaleX(1.05f)
                     .scaleY(1.05f)

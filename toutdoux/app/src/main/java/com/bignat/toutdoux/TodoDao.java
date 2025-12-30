@@ -19,6 +19,6 @@ public interface TodoDao {
     @Delete
     void delete(TodoItem todo);
 
-    @Query("SELECT * FROM todos")
+    @Query("SELECT * FROM todos ORDER BY orderIndex ASC")
     List<TodoItem> getAllTodos();
 }

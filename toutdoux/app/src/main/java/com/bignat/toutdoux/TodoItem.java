@@ -11,6 +11,8 @@ public class TodoItem {
     public String title;
     public boolean completed;
 
+    public int orderIndex;
+
     public TodoItem(String title) {
         this.title = title;
         this.completed = false;
@@ -26,5 +28,13 @@ public class TodoItem {
 
     public void setCompleted(boolean completed) {
         this.completed = completed;
+    }
+
+    public int getOrderIndex() {
+        return orderIndex;
+    }
+
+    public void setOrderIndex(int orderIndex) {
+        this.orderIndex = orderIndex;
     }
 }

@@ -3,13 +3,12 @@ package com.bignat.toutdoux;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.ArrayList;
 import java.util.List;
 import android.text.InputType;
-import android.util.Log;
 import android.widget.EditText;
 import androidx.appcompat.app.AlertDialog;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -31,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
         TodoDao todoDao = db.todoDao();
         todoList = todoDao.getAllTodos();
 
-        adapter = new TodoAdapter(todoList);
+        adapter = new TodoAdapter(todoList, todoDao);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
@@ -40,6 +39,10 @@ public class MainActivity extends AppCompatActivity {
 
         FloatingActionButton fab = findViewById(R.id.fabAdd);
         fab.setOnClickListener(v -> showAddTodoDialog(todoDao));
+
+        ItemTouchHelper.Callback callback = new TodoItemTouchHelper(adapter);
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(callback);
+        itemTouchHelper.attachToRecyclerView(recyclerView);
     }
 
     private void showAddTodoDialog(TodoDao todoDao) {
@@ -57,9 +60,10 @@ public class MainActivity extends AppCompatActivity {
             if (!title.isEmpty()) {
                 // Add to list
                 TodoItem newItem = new TodoItem(title);
-                long id = todoDao.insert(newItem);             // save to database
+                newItem.setOrderIndex(todoList.size());
+                long id = todoDao.insert(newItem); // Save to database
                 newItem.id = (int) id;
-                todoList.add(newItem);               // update list
+                todoList.add(newItem); // Update list
                 adapter.notifyItemInserted(todoList.size() - 1);
                 recyclerView.scrollToPosition(todoList.size() - 1);
             }
@@ -78,7 +82,6 @@ public class MainActivity extends AppCompatActivity {
 
         builder.setPositiveButton("Remove", (dialog, which) -> {
             todoDao.delete(todoList.get(position));  // remove from DB
-            Log.d("DELETE", "Deleting from DB: " + todoList.get(position).getTitle());
             todoList.remove(position);               // remove from list
             adapter.notifyItemRemoved(position);
         });

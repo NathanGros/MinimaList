@@ -3,7 +3,12 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:padding="12dp">
+    android:layout_marginTop="1dp"
+    android:layout_marginBottom="1dp"
+    android:layout_marginLeft="20dp"
+    android:layout_marginRight="20dp"
+    android:padding="5dp"
+    android:background="@drawable/todo_item_bg">
 
     <CheckBox
         android:id="@+id/checkBox"
@@ -15,6 +20,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="18sp"
-        android:layout_marginStart="8dp" />
+        android:layout_marginStart="5dp" />
 
 </LinearLayout>

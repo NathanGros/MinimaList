@@ -15,6 +15,7 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.TodoViewHolder
 
     private List<TodoItem> todoList;
     private OnItemClickListener listener;
+    private TodoDao todoDao;
 
     public interface OnItemClickListener {
         void onItemClick(int position);
@@ -24,8 +25,9 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.TodoViewHolder
         this.listener = listener;
     }
 
-    public TodoAdapter(List<TodoItem> todoList) {
+    public TodoAdapter(List<TodoItem> todoList, TodoDao todoDao) {
         this.todoList = todoList;
+        this.todoDao = todoDao;
     }
 
     @NonNull
@@ -52,6 +54,20 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.TodoViewHolder
     @Override
     public int getItemCount() {
         return todoList.size();
+    }
+
+    public void onItemMove(int fromPosition, int toPosition) {
+        TodoItem movedItem = todoList.remove(fromPosition);
+        todoList.add(toPosition, movedItem);
+        notifyItemMoved(fromPosition, toPosition);
+    }
+
+    public void onDragFinished() {
+        for (int i = 0; i < todoList.size(); i++) {
+            TodoItem item = todoList.get(i);
+            item.orderIndex = i;
+            todoDao.update(item);
+        }
     }
 
     static class TodoViewHolder extends RecyclerView.ViewHolder {

@@ -4,19 +4,23 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.PopupMenu;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 import android.text.InputType;
+import android.view.View;
 import android.widget.EditText;
+
 import androidx.appcompat.app.AlertDialog;
 
 import com.bignat.toutdoux.AppDatabase;
 import com.bignat.toutdoux.R;
 import com.bignat.toutdoux.timeless_lists.timeless_list.TimelessList;
 import com.bignat.toutdoux.timeless_lists.timeless_list.TimelessListActivity;
+import com.bignat.toutdoux.timeless_lists.timeless_list.TimelessListDao;
 import com.bignat.toutdoux.timeless_lists.timeless_list.TimelessListTouchHelper;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -37,6 +41,7 @@ public class TimelessListsActivity extends AppCompatActivity {
         // Read database
         AppDatabase db = AppDatabase.getDatabase(this);
         TimelessListsDao timelessListsDao = db.timelessListsDao();
+        TimelessListDao timelessListDao = db.timelessListDao();
         items = timelessListsDao.getAll();
         adapter = new TimelessListsAdapter(items, timelessListsDao);
 
@@ -48,7 +53,10 @@ public class TimelessListsActivity extends AppCompatActivity {
         // Open timeless list
         adapter.setOnListClickListener(timelessList -> openTimelessList(timelessList));
 
-        // Add item button
+        // Open timeless list settings
+        adapter.setOnSettingsClickListener((list, anchor) -> openTimelessListSettings(list, anchor, timelessListsDao, timelessListDao));
+
+        // Add timeless list button
         FloatingActionButton addButton = findViewById(R.id.fabAdd);
         addButton.setOnClickListener(v -> showAddTimelessListDialog(timelessListsDao));
 
@@ -67,6 +75,40 @@ public class TimelessListsActivity extends AppCompatActivity {
         intent.putExtra("LIST_ID", timelessList.id);
         intent.putExtra("LIST_NAME", timelessList.getTimelessListTitle());
         startActivity(intent);
+    }
+
+    /**
+     * Builds and shows the "remove list" dialog
+     * @param timelessList
+     * @param anchor
+     */
+    private void openTimelessListSettings(TimelessList timelessList, View anchor, TimelessListsDao timelessListsDao, TimelessListDao timelessListDao) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Remove " + timelessList.getTimelessListTitle() + " ?");
+        builder.setMessage("Are you sure you want to remove this list?");
+
+        // Remove button
+        builder.setPositiveButton("Remove", (dialog, which) -> {
+            deleteList(timelessList, timelessListsDao, timelessListDao);
+        });
+
+        // Cancel button
+        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
+
+        builder.show();
+    }
+
+    private void deleteList(TimelessList timelessList, TimelessListsDao timelessListsDao, TimelessListDao timelessListDao) {
+        // Delete from database
+        timelessListDao.deleteByList(timelessList.id);
+        timelessListsDao.delete(timelessList);
+
+        // Delete from list
+        int index = items.indexOf(timelessList);
+        if (index != -1) {
+            items.remove(index);
+            adapter.notifyItemRemoved(index);
+        }
     }
 
     /**

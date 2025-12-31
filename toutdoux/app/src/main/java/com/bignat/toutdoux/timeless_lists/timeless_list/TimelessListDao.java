@@ -24,4 +24,7 @@ public interface TimelessListDao {
 
     @Delete
     void delete(TimelessItem timelessItem);
+
+    @Query("DELETE FROM timelessitem WHERE listId = :listId")
+    void deleteByList(int listId);
 }

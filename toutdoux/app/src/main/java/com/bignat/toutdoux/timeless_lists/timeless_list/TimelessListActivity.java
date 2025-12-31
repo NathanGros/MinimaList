@@ -60,7 +60,7 @@ public class TimelessListActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
 
         // Remove item
-        adapter.setOnItemClickListener(position -> showRemoveTimelessItemDialog(position, timelessListDao));
+        adapter.setOnItemClickListener(position -> openTimelessItemSettings(position, timelessListDao));
 
         // Add item button
         FloatingActionButton addButton = findViewById(R.id.fabAdd);
@@ -111,21 +111,27 @@ public class TimelessListActivity extends AppCompatActivity {
      * @param position
      * @param timelessListDao
      */
-    private void showRemoveTimelessItemDialog(int position, TimelessListDao timelessListDao) {
+    private void openTimelessItemSettings(int position, TimelessListDao timelessListDao) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Remove " + items.get(position).getTitle() + " ?");
         builder.setMessage("Are you sure you want to remove this item?");
 
         // Remove button
         builder.setPositiveButton("Remove", (dialog, which) -> {
-            timelessListDao.delete(items.get(position));  // Remove from DB
-            items.remove(position); // Remove from list
-            adapter.notifyItemRemoved(position);
+            deleteItem(timelessListDao, position);
         });
 
         // Cancel button
         builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
 
         builder.show();
+    }
+
+    private void deleteItem(TimelessListDao timelessListDao, int position) {
+        // Remove from database
+        timelessListDao.delete(items.get(position));
+        // Remove from list
+        items.remove(position);
+        adapter.notifyItemRemoved(position);
     }
 }

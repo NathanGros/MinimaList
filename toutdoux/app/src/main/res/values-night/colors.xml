@@ -5,4 +5,5 @@
     <color name="app_background">#FF000000</color>
     <color name="item_background">#FF000000</color>
     <color name="item_drag_background">#FF151515</color>
+    <color name="ripple_color">#FF292929</color>
 </resources>

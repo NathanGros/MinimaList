@@ -5,6 +5,7 @@
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
         <item name="android:windowLightStatusBar">true</item>
         <item name="android:statusBarColor">@color/app_background</item>
+        <item name="colorControlHighlight">@color/ripple_color</item>
     </style>
 
     <style name="Theme.ToutDoux" parent="Base.Theme.ToutDoux" />

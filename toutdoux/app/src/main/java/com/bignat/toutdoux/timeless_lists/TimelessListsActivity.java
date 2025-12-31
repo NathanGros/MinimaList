@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -16,6 +17,7 @@ import com.bignat.toutdoux.AppDatabase;
 import com.bignat.toutdoux.R;
 import com.bignat.toutdoux.timeless_lists.timeless_list.TimelessList;
 import com.bignat.toutdoux.timeless_lists.timeless_list.TimelessListActivity;
+import com.bignat.toutdoux.timeless_lists.timeless_list.TimelessListTouchHelper;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 /**
@@ -49,6 +51,11 @@ public class TimelessListsActivity extends AppCompatActivity {
         // Add item button
         FloatingActionButton addButton = findViewById(R.id.fabAdd);
         addButton.setOnClickListener(v -> showAddTimelessListDialog(timelessListsDao));
+
+        // Drag items
+        ItemTouchHelper.Callback callback = new TimelessListTouchHelper(adapter);
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(callback);
+        itemTouchHelper.attachToRecyclerView(recyclerView);
     }
 
     /**

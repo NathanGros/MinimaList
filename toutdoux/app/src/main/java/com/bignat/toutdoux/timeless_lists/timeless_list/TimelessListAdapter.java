@@ -1,5 +1,6 @@
 package com.bignat.toutdoux.timeless_lists.timeless_list;
 
+import android.graphics.Paint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,11 +49,24 @@ public class TimelessListAdapter extends RecyclerView.Adapter<TimelessListAdapte
         holder.textTitle.setText(item.getTitle());
         holder.checkBox.setChecked(item.isCompleted());
 
+        updateCheck(item, item.isCompleted(), holder);
+
         holder.checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            item.setCompleted(isChecked);
+            updateCheck(item, isChecked, holder);
             AppDatabase db = AppDatabase.getDatabase(holder.itemView.getContext());
             db.timelessListDao().update(item);   // update in database
         });
+    }
+
+    private void updateCheck(TimelessItem item, boolean isChecked, TimelessViewHolder holder) {
+        item.setCompleted(isChecked);
+        if (item.completed) {
+            holder.textTitle.setAlpha(0.5f);
+            holder.checkBox.setAlpha(0.5f);
+        } else {
+            holder.textTitle.setAlpha(1f);
+            holder.checkBox.setAlpha(1f);
+        }
     }
 
     @Override

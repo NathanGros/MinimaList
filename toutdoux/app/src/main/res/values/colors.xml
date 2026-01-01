@@ -5,5 +5,9 @@
     <color name="app_background">#FFF5F5F5</color>
     <color name="item_background">#FFF5F5F5</color>
     <color name="item_drag_background">#FFE5E5E5</color>
+    <color name="text_normal">#FF000000</color>
+    <color name="text_title">#FF000000</color>
     <color name="ripple_color">#FFD5D5D5</color>
+    <color name="checkbox">#FF000000</color>
+    <color name="icon">#FF000000</color>
 </resources>

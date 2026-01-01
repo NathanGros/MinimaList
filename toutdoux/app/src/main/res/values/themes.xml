@@ -1,11 +1,13 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Base.Theme.ToutDoux" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
         <item name="android:windowLightStatusBar">true</item>
         <item name="android:statusBarColor">@color/app_background</item>
         <item name="colorControlHighlight">@color/ripple_color</item>
+    </style>
+    <style name="NoTintCheckBox" parent="Widget.AppCompat.CompoundButton.CheckBox">
+        <item name="buttonTint">@null</item>
+        <item name="android:buttonTint">@null</item>
     </style>
 
     <style name="Theme.ToutDoux" parent="Base.Theme.ToutDoux" />

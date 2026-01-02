@@ -15,6 +15,13 @@
     <Button
         android:id="@+id/deleteButton"
         android:text="Delete"
+        android:textColor="@color/text_bad"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:id="@+id/cancelButton"
+        android:text="Cancel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 

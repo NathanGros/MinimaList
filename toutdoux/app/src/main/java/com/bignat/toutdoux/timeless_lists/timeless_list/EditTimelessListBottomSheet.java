@@ -53,6 +53,7 @@ public class EditTimelessListBottomSheet extends BottomSheetDialogFragment {
         super.onViewCreated(view, savedInstanceState);
         EditText titleEdit = view.findViewById(R.id.titleEdit);
         Button deleteButton = view.findViewById(R.id.deleteButton);
+        Button cancelButton = view.findViewById(R.id.cancelButton);
         Button saveButton = view.findViewById(R.id.saveButton);
 
         TimelessList item = context.getItems().get(itemPosition);
@@ -63,6 +64,10 @@ public class EditTimelessListBottomSheet extends BottomSheetDialogFragment {
             item.setTimelessListTitle(titleEdit.getText().toString().trim());
             context.getTimelessListsDao().update(item);
             context.getAdapter().notifyItemChanged(itemPosition);
+            dismiss();
+        });
+
+        cancelButton.setOnClickListener(v -> {
             dismiss();
         });
 

@@ -16,8 +16,6 @@ import com.bignat.toutdoux.R;
 import com.bignat.toutdoux.timeless_lists.timeless_list.TimelessListActivity;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
-import java.util.List;
-
 public class EditTimelessItemBottomSheet extends BottomSheetDialogFragment {
     private int itemPosition;
     private TimelessListActivity context;
@@ -58,6 +56,7 @@ public class EditTimelessItemBottomSheet extends BottomSheetDialogFragment {
         CheckBox completedCheck = view.findViewById(R.id.completedCheck);
         CheckBox optionalCheck = view.findViewById(R.id.optionalCheck);
         Button deleteButton = view.findViewById(R.id.deleteButton);
+        Button cancelButton = view.findViewById(R.id.cancelButton);
         Button saveButton = view.findViewById(R.id.saveButton);
 
         TimelessItem item = context.getItems().get(itemPosition);
@@ -72,6 +71,10 @@ public class EditTimelessItemBottomSheet extends BottomSheetDialogFragment {
             item.setOptional(optionalCheck.isChecked());
             context.getTimelessListDao().update(item);
             context.getAdapter().notifyItemChanged(itemPosition);
+            dismiss();
+        });
+
+        cancelButton.setOnClickListener(v -> {
             dismiss();
         });
 

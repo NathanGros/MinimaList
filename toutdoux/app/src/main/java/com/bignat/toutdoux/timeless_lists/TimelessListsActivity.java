@@ -57,13 +57,18 @@ public class TimelessListsActivity extends AppCompatActivity {
         adapter.setOnSettingsClickListener((list, anchor) -> openTimelessListSettings(list, anchor, timelessListsDao, timelessListDao));
 
         // Add timeless list button
-        FloatingActionButton addButton = findViewById(R.id.fabAdd);
-        addButton.setOnClickListener(v -> showAddTimelessListDialog(timelessListsDao));
+        FloatingActionButton addItemButton = findViewById(R.id.addItemButton);
+        addItemButton.setOnClickListener(v -> showAddTimelessListDialog(timelessListsDao));
+
+        // Toggle edit mode button
+        FloatingActionButton editModeButton = findViewById(R.id.editModeButton);
+        editModeButton.setOnClickListener(v -> toggleEditMode(editModeButton, addItemButton));
 
         // Drag items
         ItemTouchHelper.Callback callback = new TimelessListTouchHelper(adapter);
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(callback);
         itemTouchHelper.attachToRecyclerView(recyclerView);
+        adapter.setItemTouchHelper(itemTouchHelper);
     }
 
     /**
@@ -143,5 +148,15 @@ public class TimelessListsActivity extends AppCompatActivity {
         builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
 
         builder.show();
+    }
+
+    private void toggleEditMode(FloatingActionButton editModeButton, FloatingActionButton addItemButton) {
+        adapter.setEditMode(!adapter.isEditMode());
+
+        addItemButton.setVisibility(adapter.isEditMode() ? View.VISIBLE : View.GONE);
+
+        editModeButton.setImageResource(
+                adapter.isEditMode() ? R.drawable.outline_edit_off_24 : R.drawable.outline_edit_24
+        );
     }
 }

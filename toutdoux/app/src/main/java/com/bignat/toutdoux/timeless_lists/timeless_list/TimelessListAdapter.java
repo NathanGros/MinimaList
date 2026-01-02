@@ -37,10 +37,6 @@ public class TimelessListAdapter extends RecyclerView.Adapter<TimelessListAdapte
         void onItemSettingsClick(int position);
     }
 
-    public void setOnItemClickListener(OnItemClickListener listener) {
-        this.listener = listener;
-    }
-
     public void setOnItemSettingsClickListener(OnItemSettingsClickListener settingsListener) {
         this.settingsListener = settingsListener;
     }
@@ -75,11 +71,11 @@ public class TimelessListAdapter extends RecyclerView.Adapter<TimelessListAdapte
 
         if (isEditMode) {
             holder.dragHandle.setVisibility(View.VISIBLE);
-            holder.deleteButton.setVisibility(View.VISIBLE);
+            holder.settingsButton.setVisibility(View.VISIBLE);
             holder.checkBox.setVisibility(View.GONE);
         } else {
             holder.dragHandle.setVisibility(View.GONE);
-            holder.deleteButton.setVisibility(View.GONE);
+            holder.settingsButton.setVisibility(View.GONE);
             holder.checkBox.setVisibility(View.VISIBLE);
         }
 
@@ -90,7 +86,7 @@ public class TimelessListAdapter extends RecyclerView.Adapter<TimelessListAdapte
             return false;
         });
 
-        holder.deleteButton.setOnClickListener(v -> {
+        holder.settingsButton.setOnClickListener(v -> {
             settingsListener.onItemSettingsClick(position);
         });
     }
@@ -142,14 +138,14 @@ public class TimelessListAdapter extends RecyclerView.Adapter<TimelessListAdapte
         CheckBox checkBox;
         TextView textTitle;
         ImageView dragHandle;
-        ImageButton deleteButton;
+        ImageButton settingsButton;
 
         TimelessViewHolder(View itemView, OnItemClickListener listener) {
             super(itemView);
             checkBox = itemView.findViewById(R.id.checkBox);
             textTitle = itemView.findViewById(R.id.textTitle);
             dragHandle = itemView.findViewById(R.id.dragHandle);
-            deleteButton = itemView.findViewById(R.id.deleteButton);
+            settingsButton = itemView.findViewById(R.id.settingsButton);
 
             itemView.setOnClickListener(v -> {
                 if (listener != null) {

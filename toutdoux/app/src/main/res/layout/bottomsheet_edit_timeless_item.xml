@@ -4,43 +4,64 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="24dp" >
+    android:padding="24dp"
+    android:background="@color/app_background_menu" >
 
     <EditText
         android:id="@+id/titleEdit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="20sp"/>
+        android:layout_margin="5dp"
+        android:textColor="@color/text_normal"
+        android:textSize="22sp"/>
 
     <CheckBox
         android:id="@+id/completedCheck"
-        android:text="Completed"
+        android:text="  Completed"
+        style="@style/NoTintCheckBox"
+        android:button="@drawable/checkbox_selector"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:textColor="@color/text_normal"
+        android:textSize="16sp" />
 
     <CheckBox
         android:id="@+id/optionalCheck"
-        android:text="Optional"
+        android:text="  Optional"
+        style="@style/NoTintCheckBox"
+        android:button="@drawable/checkbox_selector"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:textColor="@color/text_normal"
+        android:textSize="16sp" />
 
     <Button
         android:id="@+id/deleteButton"
         android:text="Delete"
-        android:textColor="@color/text_bad"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:textColor="@color/text_bad"
+        android:textSize="18sp" />
 
     <Button
         android:id="@+id/cancelButton"
         android:text="Cancel"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:textColor="@color/text_normal"
+        android:textSize="18sp" />
 
     <Button
         android:id="@+id/saveButton"
         android:text="Save"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:textColor="@color/text_normal"
+        android:textSize="18sp" />
 
 </LinearLayout>

@@ -3,6 +3,7 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="app_background">#FF000000</color>
+    <color name="app_background_menu">#FF101010</color>
     <color name="item_background">#FF000000</color>
     <color name="item_drag_background">#FF151515</color>
     <color name="text_normal">#FFFFFFFF</color>

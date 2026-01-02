@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 import android.text.InputType;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -60,16 +61,21 @@ public class TimelessListActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
 
         // Remove item
-        adapter.setOnItemClickListener(position -> openTimelessItemSettings(position, timelessListDao));
+        adapter.setOnItemSettingsClickListener(position -> openTimelessItemSettings(position, timelessListDao));
 
         // Add item button
-        FloatingActionButton addButton = findViewById(R.id.fabAdd);
-        addButton.setOnClickListener(v -> showAddTimelessItemDialog(timelessListDao));
+        FloatingActionButton addItemButton = findViewById(R.id.addItemButton);
+        addItemButton.setOnClickListener(v -> showAddTimelessItemDialog(timelessListDao));
+
+        // Toggle edit mode button
+        FloatingActionButton editModeButton = findViewById(R.id.editModeButton);
+        editModeButton.setOnClickListener(v -> toggleEditMode(editModeButton, addItemButton));
 
         // Drag items
         ItemTouchHelper.Callback callback = new TimelessItemTouchHelper(adapter);
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(callback);
         itemTouchHelper.attachToRecyclerView(recyclerView);
+        adapter.setItemTouchHelper(itemTouchHelper);
     }
 
     /**
@@ -133,5 +139,15 @@ public class TimelessListActivity extends AppCompatActivity {
         // Remove from list
         items.remove(position);
         adapter.notifyItemRemoved(position);
+    }
+
+    private void toggleEditMode(FloatingActionButton editModeButton, FloatingActionButton addItemButton) {
+        adapter.setEditMode(!adapter.isEditMode());
+
+        addItemButton.setVisibility(adapter.isEditMode() ? View.VISIBLE : View.GONE);
+
+        editModeButton.setImageResource(
+            adapter.isEditMode() ? R.drawable.outline_edit_off_24 : R.drawable.outline_edit_24
+        );
     }
 }

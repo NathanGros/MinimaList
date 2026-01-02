@@ -2,12 +2,16 @@ package com.bignat.toutdoux.timeless_lists.timeless_list;
 
 import android.graphics.Paint;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bignat.toutdoux.AppDatabase;
@@ -20,19 +24,31 @@ public class TimelessListAdapter extends RecyclerView.Adapter<TimelessListAdapte
 
     private List<TimelessItem> timelessList;
     private OnItemClickListener listener;
+    private OnItemSettingsClickListener settingsListener;
     private TimelessListDao timelessListDao;
+    private boolean isEditMode;
+    private ItemTouchHelper itemTouchHelper;
 
     public interface OnItemClickListener {
         void onItemClick(int position);
+    }
+
+    public interface OnItemSettingsClickListener {
+        void onItemSettingsClick(int position);
     }
 
     public void setOnItemClickListener(OnItemClickListener listener) {
         this.listener = listener;
     }
 
+    public void setOnItemSettingsClickListener(OnItemSettingsClickListener settingsListener) {
+        this.settingsListener = settingsListener;
+    }
+
     public TimelessListAdapter(List<TimelessItem> timelessItems, TimelessListDao timelessListDao) {
         this.timelessList = timelessItems;
         this.timelessListDao = timelessListDao;
+        this.isEditMode = false;
     }
 
     @NonNull
@@ -55,6 +71,27 @@ public class TimelessListAdapter extends RecyclerView.Adapter<TimelessListAdapte
             updateCheck(item, isChecked, holder);
             AppDatabase db = AppDatabase.getDatabase(holder.itemView.getContext());
             db.timelessListDao().update(item);   // update in database
+        });
+
+        if (isEditMode) {
+            holder.dragHandle.setVisibility(View.VISIBLE);
+            holder.deleteButton.setVisibility(View.VISIBLE);
+            holder.checkBox.setVisibility(View.GONE);
+        } else {
+            holder.dragHandle.setVisibility(View.GONE);
+            holder.deleteButton.setVisibility(View.GONE);
+            holder.checkBox.setVisibility(View.VISIBLE);
+        }
+
+        holder.dragHandle.setOnTouchListener((v, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                itemTouchHelper.startDrag(holder);
+            }
+            return false;
+        });
+
+        holder.deleteButton.setOnClickListener(v -> {
+            settingsListener.onItemSettingsClick(position);
         });
     }
 
@@ -88,14 +125,31 @@ public class TimelessListAdapter extends RecyclerView.Adapter<TimelessListAdapte
         }
     }
 
+    public void setEditMode(boolean editMode) {
+        isEditMode = editMode;
+        notifyDataSetChanged();
+    }
+
+    public boolean isEditMode() {
+        return isEditMode;
+    }
+
+    public void setItemTouchHelper(ItemTouchHelper helper) {
+        this.itemTouchHelper = helper;
+    }
+
     static class TimelessViewHolder extends RecyclerView.ViewHolder {
         CheckBox checkBox;
         TextView textTitle;
+        ImageView dragHandle;
+        ImageButton deleteButton;
 
         TimelessViewHolder(View itemView, OnItemClickListener listener) {
             super(itemView);
             checkBox = itemView.findViewById(R.id.checkBox);
             textTitle = itemView.findViewById(R.id.textTitle);
+            dragHandle = itemView.findViewById(R.id.dragHandle);
+            deleteButton = itemView.findViewById(R.id.deleteButton);
 
             itemView.setOnClickListener(v -> {
                 if (listener != null) {

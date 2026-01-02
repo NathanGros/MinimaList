@@ -30,6 +30,10 @@ public class TimelessItemTouchHelper extends ItemTouchHelper.Callback {
             @NonNull RecyclerView recyclerView,
             @NonNull RecyclerView.ViewHolder viewHolder
     ) {
+        if (!adapter.isEditMode()) {
+            return 0;
+        }
+
         int dragFlags = ItemTouchHelper.UP | ItemTouchHelper.DOWN;
         return makeMovementFlags(dragFlags, 0);
     }

@@ -1,6 +1,5 @@
 package com.bignat.toutdoux.timeless_lists;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -10,8 +9,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.widget.PopupMenu;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -37,7 +34,7 @@ public class TimelessListsAdapter extends RecyclerView.Adapter<TimelessListsAdap
     }
 
     public interface OnSettingsClickListener {
-        void onSettingsClick(TimelessList timelessList, View anchor);
+        void onSettingsClick(int position);
     }
 
     public void setOnListClickListener(OnListClickListener listener) {
@@ -91,7 +88,7 @@ public class TimelessListsAdapter extends RecyclerView.Adapter<TimelessListsAdap
 
         // Open list settings
         holder.settingsButton.setOnClickListener(v -> {
-            settingsClickListener.onSettingsClick(timelessList, v);
+            settingsClickListener.onSettingsClick(position);
         });
     }
 

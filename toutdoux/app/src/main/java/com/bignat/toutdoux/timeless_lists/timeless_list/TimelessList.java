@@ -18,6 +18,10 @@ public class TimelessList {
         return timelessListTitle;
     }
 
+    public void setTimelessListTitle(String timelessListTitle) {
+        this.timelessListTitle = timelessListTitle;
+    }
+
     public int getOrderIndex() {
         return orderIndex;
     }

@@ -75,8 +75,8 @@ public class TimelessListActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
 
-        // Remove item
-        adapter.setOnItemSettingsClickListener(position -> openTimelessItemSettings(position, timelessListDao));
+        // Open item settings
+        adapter.setOnItemSettingsClickListener(this::openTimelessItemSettings);
 
         // Add item button
         FloatingActionButton addItemButton = findViewById(R.id.addItemButton);
@@ -130,9 +130,8 @@ public class TimelessListActivity extends AppCompatActivity {
     /**
      * Builds and shows the "remove item" dialog
      * @param position
-     * @param timelessListDao
      */
-    private void openTimelessItemSettings(int position, TimelessListDao timelessListDao) {
+    private void openTimelessItemSettings(int position) {
         EditTimelessItemBottomSheet sheet = EditTimelessItemBottomSheet.newInstance(position, this);
         sheet.show(getSupportFragmentManager(), "edit_todo");
     }

@@ -3,8 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@color/app_background">
+    android:background="@color/app_background"
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -14,17 +14,17 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Timeless Lists"
             android:gravity="center_horizontal"
             android:padding="24dp"
-            android:textSize="22sp"
+            android:text="Timeless Lists"
             android:textColor="@color/text_title"
-            android:textStyle="bold"/>
+            android:textSize="22sp"
+            android:textStyle="bold" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent" />
 
     </LinearLayout>
 
@@ -36,8 +36,14 @@
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="90dp"
         android:contentDescription="Add item"
+        android:visibility="gone"
+        app:elevation="1dp"
+        app:pressedTranslationZ="2dp"
+        app:hoveredFocusedTranslationZ="2dp"
+        app:backgroundTint="@color/fab_off_background"
+        app:rippleColor="@color/ripple_color"
         app:srcCompat="@android:drawable/ic_input_add"
-        android:visibility="gone" />
+        app:tint="@color/fab_off_foreground" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/editModeButton"
@@ -46,6 +52,12 @@
         android:layout_gravity="bottom|end"
         android:layout_margin="16dp"
         android:contentDescription="Toggle edit mode"
-        app:srcCompat="@drawable/outline_edit_24" />
+        app:elevation="1dp"
+        app:pressedTranslationZ="2dp"
+        app:hoveredFocusedTranslationZ="2dp"
+        app:backgroundTint="@color/fab_off_background"
+        app:rippleColor="@color/ripple_color"
+        app:srcCompat="@drawable/outline_edit_24"
+        app:tint="@color/fab_off_foreground" />
 
 </FrameLayout>

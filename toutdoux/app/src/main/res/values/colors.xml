@@ -12,4 +12,8 @@
     <color name="ripple_color">#FFD5D5D5</color>
     <color name="checkbox">#FF000000</color>
     <color name="icon">#FF000000</color>
+    <color name="fab_off_background">#FFDFDFDF</color>
+    <color name="fab_off_foreground">@color/text_normal</color>
+    <color name="fab_on_background">@color/text_normal</color>
+    <color name="fab_on_foreground">@color/app_background</color>
 </resources>

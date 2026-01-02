@@ -36,8 +36,14 @@
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="90dp"
         android:contentDescription="Add item"
+        android:visibility="gone"
+        app:elevation="1dp"
+        app:pressedTranslationZ="2dp"
+        app:hoveredFocusedTranslationZ="2dp"
+        app:backgroundTint="@color/fab_off_background"
+        app:rippleColor="@color/ripple_color"
         app:srcCompat="@android:drawable/ic_input_add"
-        android:visibility="gone" />
+        app:tint="@color/fab_off_foreground" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/editModeButton"
@@ -46,6 +52,12 @@
         android:layout_gravity="bottom|end"
         android:layout_margin="16dp"
         android:contentDescription="Toggle edit mode"
-        app:srcCompat="@drawable/outline_edit_24"/>
+        app:elevation="1dp"
+        app:pressedTranslationZ="2dp"
+        app:hoveredFocusedTranslationZ="2dp"
+        app:backgroundTint="@color/fab_off_background"
+        app:rippleColor="@color/ripple_color"
+        app:srcCompat="@drawable/outline_edit_24"
+        app:tint="@color/fab_off_foreground" />
 
 </FrameLayout>

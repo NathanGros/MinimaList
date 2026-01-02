@@ -1,9 +1,11 @@
 package com.bignat.toutdoux.timeless_lists;
 
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -159,6 +161,16 @@ public class TimelessListsActivity extends AppCompatActivity {
 
         editModeButton.setImageResource(
                 adapter.isEditMode() ? R.drawable.outline_edit_off_24 : R.drawable.outline_edit_24
+        );
+        editModeButton.setBackgroundTintList(
+            ColorStateList.valueOf(
+                ContextCompat.getColor(this, adapter.isEditMode() ? R.color.fab_on_background : R.color.fab_off_background)
+            )
+        );
+        editModeButton.setImageTintList(
+            ColorStateList.valueOf(
+                ContextCompat.getColor(this, adapter.isEditMode() ? R.color.fab_on_foreground : R.color.fab_off_foreground)
+            )
         );
     }
 }

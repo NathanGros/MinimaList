@@ -18,6 +18,7 @@ import androidx.appcompat.app.AlertDialog;
 
 import com.bignat.toutdoux.AppDatabase;
 import com.bignat.toutdoux.R;
+import com.bignat.toutdoux.timeless_lists.timeless_list.timeless_item.EditTimelessItemBottomSheet;
 import com.bignat.toutdoux.timeless_lists.timeless_list.timeless_item.TimelessItem;
 import com.bignat.toutdoux.timeless_lists.timeless_list.timeless_item.TimelessItemTouchHelper;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -31,6 +32,20 @@ public class TimelessListActivity extends AppCompatActivity {
     private RecyclerView recyclerView; // List view
     private TimelessListAdapter adapter; // View adapter
     private List<TimelessItem> items; // timeless items
+
+    private TimelessListDao timelessListDao;
+
+    public TimelessListDao getTimelessListDao() {
+        return timelessListDao;
+    }
+
+    public List<TimelessItem> getItems() {
+        return items;
+    }
+
+    public TimelessListAdapter getAdapter() {
+        return adapter;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +66,7 @@ public class TimelessListActivity extends AppCompatActivity {
 
         // Read database
         AppDatabase db = AppDatabase.getDatabase(this);
-        TimelessListDao timelessListDao = db.timelessListDao();
+        timelessListDao = db.timelessListDao();
         items = timelessListDao.getByList(id);
         adapter = new TimelessListAdapter(items, timelessListDao);
 
@@ -118,27 +133,8 @@ public class TimelessListActivity extends AppCompatActivity {
      * @param timelessListDao
      */
     private void openTimelessItemSettings(int position, TimelessListDao timelessListDao) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Remove " + items.get(position).getTitle() + " ?");
-        builder.setMessage("Are you sure you want to remove this item?");
-
-        // Remove button
-        builder.setPositiveButton("Remove", (dialog, which) -> {
-            deleteItem(timelessListDao, position);
-        });
-
-        // Cancel button
-        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
-
-        builder.show();
-    }
-
-    private void deleteItem(TimelessListDao timelessListDao, int position) {
-        // Remove from database
-        timelessListDao.delete(items.get(position));
-        // Remove from list
-        items.remove(position);
-        adapter.notifyItemRemoved(position);
+        EditTimelessItemBottomSheet sheet = EditTimelessItemBottomSheet.newInstance(position, this);
+        sheet.show(getSupportFragmentManager(), "edit_todo");
     }
 
     private void toggleEditMode(FloatingActionButton editModeButton, FloatingActionButton addItemButton) {

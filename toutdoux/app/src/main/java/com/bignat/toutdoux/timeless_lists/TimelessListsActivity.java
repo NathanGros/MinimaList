@@ -62,13 +62,21 @@ public class TimelessListsActivity extends AppCompatActivity {
 
         // Toggle edit mode button
         FloatingActionButton editModeButton = findViewById(R.id.editModeButton);
-        editModeButton.setOnClickListener(v -> toggleEditMode(editModeButton, addItemButton));
+        editModeButton.setOnClickListener(v -> setEditMode(!adapter.isEditMode(), editModeButton, addItemButton));
 
         // Drag items
         ItemTouchHelper.Callback callback = new TimelessListTouchHelper(adapter);
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(callback);
         itemTouchHelper.attachToRecyclerView(recyclerView);
         adapter.setItemTouchHelper(itemTouchHelper);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        FloatingActionButton editModeButton = findViewById(R.id.editModeButton);
+        FloatingActionButton addItemButton = findViewById(R.id.addItemButton);
+        setEditMode(false, editModeButton, addItemButton);
     }
 
     /**
@@ -150,8 +158,8 @@ public class TimelessListsActivity extends AppCompatActivity {
         builder.show();
     }
 
-    private void toggleEditMode(FloatingActionButton editModeButton, FloatingActionButton addItemButton) {
-        adapter.setEditMode(!adapter.isEditMode());
+    private void setEditMode(boolean newEditMode, FloatingActionButton editModeButton, FloatingActionButton addItemButton) {
+        adapter.setEditMode(newEditMode);
 
         addItemButton.setVisibility(adapter.isEditMode() ? View.VISIBLE : View.GONE);
 

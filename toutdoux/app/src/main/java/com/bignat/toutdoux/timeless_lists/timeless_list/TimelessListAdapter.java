@@ -1,6 +1,7 @@
 package com.bignat.toutdoux.timeless_lists.timeless_list;
 
 import android.graphics.Paint;
+import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -59,6 +60,12 @@ public class TimelessListAdapter extends RecyclerView.Adapter<TimelessListAdapte
         TimelessItem item = timelessList.get(position);
 
         holder.textTitle.setText(item.getTitle());
+        if (item.isOptional()) {
+            holder.textTitle.setTypeface(null, Typeface.ITALIC);
+        } else {
+            holder.textTitle.setTypeface(null, Typeface.NORMAL);
+        }
+
         holder.checkBox.setChecked(item.isCompleted());
 
         updateCheck(item, item.isCompleted(), holder);
@@ -93,7 +100,7 @@ public class TimelessListAdapter extends RecyclerView.Adapter<TimelessListAdapte
 
     private void updateCheck(TimelessItem item, boolean isChecked, TimelessViewHolder holder) {
         item.setCompleted(isChecked);
-        if (item.completed) {
+        if (item.isCompleted()) {
             holder.textTitle.setAlpha(0.5f);
             holder.checkBox.setAlpha(0.5f);
         } else {

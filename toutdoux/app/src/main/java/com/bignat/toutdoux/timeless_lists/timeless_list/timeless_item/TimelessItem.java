@@ -12,6 +12,7 @@ public class TimelessItem {
 
     public String title;
     public boolean completed;
+    public boolean optional;
 
     public int orderIndex;
 
@@ -19,6 +20,7 @@ public class TimelessItem {
         this.title = title;
         this.listId = listId;
         this.completed = false;
+        this.optional = false;
     }
 
     public String getTitle() {
@@ -31,6 +33,14 @@ public class TimelessItem {
 
     public void setCompleted(boolean completed) {
         this.completed = completed;
+    }
+
+    public boolean isOptional() {
+        return optional;
+    }
+
+    public void setOptional(boolean optional) {
+        this.optional = optional;
     }
 
     public int getOrderIndex() {

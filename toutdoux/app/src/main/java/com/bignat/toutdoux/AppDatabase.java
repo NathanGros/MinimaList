@@ -10,7 +10,7 @@ import com.bignat.toutdoux.timeless_lists.timeless_list.TimelessList;
 import com.bignat.toutdoux.timeless_lists.timeless_list.TimelessListDao;
 import com.bignat.toutdoux.timeless_lists.timeless_list.timeless_item.TimelessItem;
 
-@Database(entities = {TimelessItem.class, TimelessList.class}, version = 1)
+@Database(entities = {TimelessItem.class, TimelessList.class}, version = 2)
 public abstract class AppDatabase extends RoomDatabase {
     public abstract TimelessListDao timelessListDao();
     public abstract TimelessListsDao timelessListsDao();
@@ -20,9 +20,10 @@ public abstract class AppDatabase extends RoomDatabase {
     public static AppDatabase getDatabase(Context context) {
         if (INSTANCE == null) {
             INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
-                            AppDatabase.class, "todo_db")
-                    .allowMainThreadQueries() // only for simple apps, remove later
-                    .build();
+                AppDatabase.class, "todo_db")
+                .allowMainThreadQueries() // only for simple apps, remove later
+                .fallbackToDestructiveMigration()
+                .build();
         }
         return INSTANCE;
     }

@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -77,22 +78,41 @@ public class EditTimelessListBottomSheet extends BottomSheetDialogFragment {
     }
 
     private void showDeleteConfirmation(TimelessList item) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setTitle("Remove " + item.getTimelessListTitle() + " ?");
-        builder.setMessage("Are you sure you want to remove this list?");
+        AlertDialog dialog = new AlertDialog.Builder(context).create();
+
+        LayoutInflater inflater = LayoutInflater.from(context);
+        View dialogView = inflater.inflate(R.layout.alert_dialog, null);
+
+        // Get elements
+        TextView dialogTitle = dialogView.findViewById(R.id.dialogTitle);
+        TextView dialogDescription = dialogView.findViewById(R.id.dialogDescription);
+        EditText input = dialogView.findViewById(R.id.etItemTitle);
+        Button positiveButton = dialogView.findViewById(R.id.buttonPositive);
+        Button negativeButton = dialogView.findViewById(R.id.buttonNegative);
+
+        // Set values
+        dialogTitle.setText("Remove " + item.getTimelessListTitle() + " ?");
+        dialogDescription.setText("Are you sure you want to remove this list?");
+        input.setVisibility(View.GONE);
+        positiveButton.setText("Remove");
+        negativeButton.setText("Cancel");
+        dialog.setView(dialogView);
 
         // Remove button
-        builder.setPositiveButton("Remove", (dialog, which) -> {
+        positiveButton.setOnClickListener(v -> {
             deleteList(item);
+            dialog.dismiss();
             dismiss();
         });
 
         // Cancel button
-        builder.setNegativeButton("Cancel", (dialog, which) ->
-                dialog.cancel()
-        );
+        negativeButton.setOnClickListener(v -> dialog.cancel());
 
-        builder.show();
+        // Show
+        dialog.show();
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        }
     }
 
     private void deleteList(TimelessList timelessList) {

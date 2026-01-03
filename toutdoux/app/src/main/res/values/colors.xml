@@ -2,6 +2,9 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="primary">#FF000000</color>
+    <color name="primary_dark">#FF000000</color>
+    <color name="accent">#FF000000</color>
     <color name="app_background">#FFF5F5F5</color>
     <color name="app_background_menu">#FFE5E5E5</color>
     <color name="item_background">#FFF5F5F5</color>

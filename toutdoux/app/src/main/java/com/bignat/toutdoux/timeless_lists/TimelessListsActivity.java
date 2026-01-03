@@ -12,8 +12,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 import android.text.InputType;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
 
@@ -24,6 +27,7 @@ import com.bignat.toutdoux.timeless_lists.timeless_list.TimelessList;
 import com.bignat.toutdoux.timeless_lists.timeless_list.TimelessListActivity;
 import com.bignat.toutdoux.timeless_lists.timeless_list.TimelessListDao;
 import com.bignat.toutdoux.timeless_lists.timeless_list.TimelessListTouchHelper;
+import com.bignat.toutdoux.timeless_lists.timeless_list.timeless_item.TimelessItem;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 /**
@@ -125,33 +129,55 @@ public class TimelessListsActivity extends AppCompatActivity {
      * @param timelessListsDao
      */
     private void showAddTimelessListDialog(TimelessListsDao timelessListsDao) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Add new Timeless List");
+        AlertDialog dialog = new AlertDialog.Builder(this).create();
 
-        // Input field
-        final EditText input = new EditText(this);
-        input.setInputType(InputType.TYPE_CLASS_TEXT);
-        builder.setView(input);
+        LayoutInflater inflater = LayoutInflater.from(this);
+        View dialogView = inflater.inflate(R.layout.alert_dialog, null);
+
+        // Get elements
+        TextView dialogTitle = dialogView.findViewById(R.id.dialogTitle);
+        TextView dialogDescription = dialogView.findViewById(R.id.dialogDescription);
+        EditText input = dialogView.findViewById(R.id.etItemTitle);
+        Button positiveButton = dialogView.findViewById(R.id.buttonPositive);
+        Button negativeButton = dialogView.findViewById(R.id.buttonNegative);
+
+        // Set values
+        dialogTitle.setText("Add new list");
+        dialogDescription.setVisibility(View.GONE);
+        input.setHint("Item name");
+        positiveButton.setText("Add");
+        negativeButton.setText("Cancel");
+        dialog.setView(dialogView);
 
         // Add button
-        builder.setPositiveButton("Add", (dialog, which) -> {
+        positiveButton.setOnClickListener(v -> {
             String title = input.getText().toString().trim();
             if (!title.isEmpty()) {
                 // Add to list
                 TimelessList newList = new TimelessList(title);
                 newList.setOrderIndex(items.size());
-                long id = timelessListsDao.insert(newList); // Save to database
-                newList.id = (int) id;
-                items.add(newList); // Update list
+
+                long newId = timelessListsDao.insert(newList);
+                newList.id = (int) newId;
+
+                items.add(newList);
                 adapter.notifyItemInserted(items.size() - 1);
                 recyclerView.scrollToPosition(items.size() - 1);
+
+                dialog.dismiss();
+            } else {
+                input.setError("Required");
             }
         });
 
         // Cancel button
-        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
+        negativeButton.setOnClickListener(v -> dialog.cancel());
 
-        builder.show();
+        // Show
+        dialog.show();
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        }
     }
 
     private void setEditMode(boolean newEditMode, FloatingActionButton editModeButton, FloatingActionButton addItemButton) {

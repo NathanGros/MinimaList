@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/nav_daily"
+        android:icon="@drawable/outline_calendar_today_24"
+        android:title="Day" />
+
+    <item
+        android:id="@+id/nav_timeless"
+        android:icon="@drawable/outline_format_list_bulleted_24"
+        android:title="Lists" />
+
+</menu>

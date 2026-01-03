@@ -1,5 +1,4 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
     <style name="Base.Theme.ToutDoux" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="android:windowLightStatusBar">true</item>
         <item name="android:statusBarColor">@color/app_background</item>
@@ -12,6 +11,14 @@
         <item name="buttonTint">@null</item>
         <item name="android:buttonTint">@null</item>
     </style>
-
+    <style name="AppBottomNavigation"
+        parent="Widget.Material3.BottomNavigationView">
+        <item name="android:background">@color/app_background_menu</item>
+        <item name="itemTextColor">@color/bottom_nav_text</item>
+        <item name="itemIconTint">@color/bottom_nav_icon</item>
+        <item name="itemRippleColor">@color/ripple_color</item>
+        <item name="labelVisibilityMode">labeled</item>
+        <item name="itemActiveIndicatorStyle">@null</item>
+    </style>
     <style name="Theme.ToutDoux" parent="Base.Theme.ToutDoux" />
 </resources>

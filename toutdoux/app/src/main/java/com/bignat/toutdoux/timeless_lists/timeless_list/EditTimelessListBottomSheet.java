@@ -13,21 +13,19 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 
 import com.bignat.toutdoux.R;
-import com.bignat.toutdoux.timeless_lists.TimelessListsActivity;
+import com.bignat.toutdoux.timeless_lists.TimelessListsFragment;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 public class EditTimelessListBottomSheet extends BottomSheetDialogFragment {
     private int itemPosition;
-    private TimelessListsActivity context;
+    private TimelessListsFragment parentFragment;
 
-    public static com.bignat.toutdoux.timeless_lists.timeless_list.EditTimelessListBottomSheet newInstance(
-            int itemPosition,
-            TimelessListsActivity context
+    public EditTimelessListBottomSheet(
+        int itemPosition,
+        TimelessListsFragment parentFragment
     ) {
-        com.bignat.toutdoux.timeless_lists.timeless_list.EditTimelessListBottomSheet sheet = new com.bignat.toutdoux.timeless_lists.timeless_list.EditTimelessListBottomSheet();
-        sheet.itemPosition = itemPosition;
-        sheet.context = context;
-        return sheet;
+        this.itemPosition = itemPosition;
+        this.parentFragment = parentFragment;
     }
 
     @Override
@@ -44,8 +42,8 @@ public class EditTimelessListBottomSheet extends BottomSheetDialogFragment {
     public View onCreateView(
             @NonNull LayoutInflater inflater,
             @Nullable ViewGroup container,
-            @Nullable Bundle savedInstanceState) {
-
+            @Nullable Bundle savedInstanceState
+    ) {
         return inflater.inflate(R.layout.bottomsheet_edit_timeless_list, container, false);
     }
 
@@ -57,14 +55,14 @@ public class EditTimelessListBottomSheet extends BottomSheetDialogFragment {
         Button cancelButton = view.findViewById(R.id.cancelButton);
         Button saveButton = view.findViewById(R.id.saveButton);
 
-        TimelessList item = context.getItems().get(itemPosition);
+        TimelessList item = parentFragment.getItems().get(itemPosition);
 
         titleEdit.setText(item.getTimelessListTitle());
 
         saveButton.setOnClickListener(v -> {
             item.setTimelessListTitle(titleEdit.getText().toString().trim());
-            context.getTimelessListsDao().update(item);
-            context.getAdapter().notifyItemChanged(itemPosition);
+            parentFragment.getTimelessListsDao().update(item);
+            parentFragment.getAdapter().notifyItemChanged(itemPosition);
             dismiss();
         });
 
@@ -78,9 +76,9 @@ public class EditTimelessListBottomSheet extends BottomSheetDialogFragment {
     }
 
     private void showDeleteConfirmation(TimelessList item) {
-        AlertDialog dialog = new AlertDialog.Builder(context).create();
+        AlertDialog dialog = new AlertDialog.Builder(requireContext()).create();
 
-        LayoutInflater inflater = LayoutInflater.from(context);
+        LayoutInflater inflater = LayoutInflater.from(requireContext());
         View dialogView = inflater.inflate(R.layout.alert_dialog, null);
 
         // Get elements
@@ -117,14 +115,14 @@ public class EditTimelessListBottomSheet extends BottomSheetDialogFragment {
 
     private void deleteList(TimelessList timelessList) {
         // Delete from database
-        context.getTimelessListDao().deleteByList(timelessList.id);
-        context.getTimelessListsDao().delete(timelessList);
+        parentFragment.getTimelessListDao().deleteByList(timelessList.id);
+        parentFragment.getTimelessListsDao().delete(timelessList);
 
         // Delete from list
-        int index = context.getItems().indexOf(timelessList);
+        int index = parentFragment.getItems().indexOf(timelessList);
         if (index != -1) {
-            context.getItems().remove(index);
-            context.getAdapter().notifyItemRemoved(index);
+            parentFragment.getItems().remove(index);
+            parentFragment.getAdapter().notifyItemRemoved(index);
         }
     }
 }

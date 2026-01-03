@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="24dp"
-    android:background="@color/app_background_menu" >
+    android:background="@drawable/bottomsheet_bg" >
 
     <EditText
         android:id="@+id/titleEdit"

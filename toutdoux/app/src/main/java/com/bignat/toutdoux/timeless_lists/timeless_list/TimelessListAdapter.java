@@ -24,15 +24,10 @@ import java.util.List;
 public class TimelessListAdapter extends RecyclerView.Adapter<TimelessListAdapter.TimelessViewHolder> {
 
     private List<TimelessItem> timelessList;
-    private OnItemClickListener listener;
     private OnItemSettingsClickListener settingsListener;
     private TimelessListDao timelessListDao;
     private boolean isEditMode;
     private ItemTouchHelper itemTouchHelper;
-
-    public interface OnItemClickListener {
-        void onItemClick(int position);
-    }
 
     public interface OnItemSettingsClickListener {
         void onItemSettingsClick(int position);
@@ -52,7 +47,7 @@ public class TimelessListAdapter extends RecyclerView.Adapter<TimelessListAdapte
     @Override
     public TimelessViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.timeless_item, parent, false);
-        return new TimelessViewHolder(view, listener);
+        return new TimelessViewHolder(view);
     }
 
     @Override
@@ -147,21 +142,12 @@ public class TimelessListAdapter extends RecyclerView.Adapter<TimelessListAdapte
         ImageView dragHandle;
         ImageButton settingsButton;
 
-        TimelessViewHolder(View itemView, OnItemClickListener listener) {
+        TimelessViewHolder(View itemView) {
             super(itemView);
             checkBox = itemView.findViewById(R.id.checkBox);
             textTitle = itemView.findViewById(R.id.textTitle);
             dragHandle = itemView.findViewById(R.id.dragHandle);
             settingsButton = itemView.findViewById(R.id.settingsButton);
-
-            itemView.setOnClickListener(v -> {
-                if (listener != null) {
-                    int position = getAdapterPosition();
-                    if (position != RecyclerView.NO_POSITION) {
-                        listener.onItemClick(position);
-                    }
-                }
-            });
         }
     }
 }

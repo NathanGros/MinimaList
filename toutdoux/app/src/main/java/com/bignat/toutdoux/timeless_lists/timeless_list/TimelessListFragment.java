@@ -1,6 +1,5 @@
 package com.bignat.toutdoux.timeless_lists.timeless_list;
 
-import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
 
@@ -32,7 +31,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
  * Activity used inside a timeless list
  */
 public class TimelessListFragment extends Fragment {
-    private int id; // List id
+    private final int id; // List id
     private String title; // List name
     private RecyclerView recyclerView; // List view
     private TimelessListAdapter adapter; // View adapter
@@ -112,7 +111,6 @@ public class TimelessListFragment extends Fragment {
 
     /**
      * Builds and shows the "add item" dialog
-     * @param timelessListDao
      */
     private void showAddTimelessItemDialog(TimelessListDao timelessListDao) {
         AlertDialog dialog = new AlertDialog.Builder(requireContext()).create();
@@ -168,7 +166,6 @@ public class TimelessListFragment extends Fragment {
 
     /**
      * Builds and shows the "remove item" dialog
-     * @param position
      */
     private void openTimelessItemSettings(int position) {
         EditTimelessItemBottomSheet sheet = new EditTimelessItemBottomSheet(position, this);

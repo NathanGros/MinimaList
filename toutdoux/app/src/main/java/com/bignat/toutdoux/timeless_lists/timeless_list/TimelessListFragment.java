@@ -65,7 +65,7 @@ public class TimelessListFragment extends Fragment {
     ) {
         // Create
         View view = inflater.inflate(
-                R.layout.activity_timeless_list,
+                R.layout.fragment_timeless_list,
                 container,
                 false
         );

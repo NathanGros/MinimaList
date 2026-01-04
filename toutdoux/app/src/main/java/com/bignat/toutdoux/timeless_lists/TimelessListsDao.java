@@ -18,7 +18,7 @@ public interface TimelessListsDao {
     /**
      * @return all {@link TimelessList}s
      */
-    @Query("SELECT * FROM TimelessList")
+    @Query("SELECT * FROM TimelessList ORDER BY orderIndex ASC")
     List<TimelessList> getAll();
 
     /**

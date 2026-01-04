@@ -1,6 +1,5 @@
 package com.bignat.toutdoux.timeless_lists;
 
-import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
 
@@ -67,7 +66,7 @@ public class TimelessListsFragment extends Fragment {
     ) {
         // Create
         View view = inflater.inflate(
-                R.layout.activity_timeless_lists,
+                R.layout.fragment_timeless_lists,
                 container,
                 false
         );

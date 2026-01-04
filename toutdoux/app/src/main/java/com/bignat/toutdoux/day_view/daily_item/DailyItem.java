@@ -1,21 +1,19 @@
-package com.bignat.toutdoux.timeless_lists.timeless_list.timeless_item;
+package com.bignat.toutdoux.day_view.daily_item;
 
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 @Entity
-public class TimelessItem {
+public class DailyItem {
     @PrimaryKey(autoGenerate = true)
     public int id;
-    public int listId;
     public String title;
     public boolean completed;
     public boolean optional;
     public int orderIndex;
 
-    public TimelessItem(String title, int listId) {
+    public DailyItem(String title) {
         this.title = title;
-        this.listId = listId;
         this.completed = false;
         this.optional = false;
     }

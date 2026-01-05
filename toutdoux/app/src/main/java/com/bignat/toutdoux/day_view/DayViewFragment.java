@@ -19,11 +19,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bignat.toutdoux.AppDatabase;
 import com.bignat.toutdoux.R;
 import com.bignat.toutdoux.day_view.day_sections.DayRow;
+import com.bignat.toutdoux.day_view.day_sections.DaySectionTitle;
 import com.bignat.toutdoux.day_view.day_sections.daily_section.DailyItem;
 import com.bignat.toutdoux.day_view.day_sections.daily_section.DailyItemDao;
 import com.bignat.toutdoux.day_view.day_sections.daily_section.EditDailyItemBottomSheet;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -42,6 +44,10 @@ public class DayViewFragment extends Fragment {
 
     public DayViewAdapter getAdapter() {
         return adapter;
+    }
+
+    public List<DayRow> getRows() {
+        return rows;
     }
 
     public List<DailyItem> getDailyItems() {
@@ -69,7 +75,10 @@ public class DayViewFragment extends Fragment {
         AppDatabase db = AppDatabase.getDatabase(requireContext());
         dailyItemDao = db.dailyItemDao();
         dailyItems = dailyItemDao.getAll();
-        adapter = new DayViewAdapter(dailyItems);
+        rows = new ArrayList<>();
+        rows.add(new DaySectionTitle("Daily"));
+        rows.addAll(dailyItems);
+        adapter = new DayViewAdapter(rows);
 
         // RecyclerView
         recyclerView = view.findViewById(R.id.recyclerView);
@@ -125,14 +134,15 @@ public class DayViewFragment extends Fragment {
             if (!title.isEmpty()) {
                 // Add to list
                 DailyItem newItem = new DailyItem(title);
-                newItem.setOrderIndex(dailyItems.size());
+                newItem.setOrderIndex(rows.size());
 
                 long newId = dailyItemDao.insert(newItem);
                 newItem.id = (int) newId;
 
                 dailyItems.add(newItem);
-                adapter.notifyItemInserted(dailyItems.size() - 1);
-                recyclerView.scrollToPosition(dailyItems.size() - 1);
+                rows.add(newItem);
+                adapter.notifyItemInserted(rows.size() - 1);
+                recyclerView.scrollToPosition(rows.size() - 1);
 
                 dialog.dismiss();
             } else {

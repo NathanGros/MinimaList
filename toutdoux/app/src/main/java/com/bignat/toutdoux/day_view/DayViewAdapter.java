@@ -1,6 +1,7 @@
 package com.bignat.toutdoux.day_view;
 
 import android.graphics.Typeface;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -15,19 +16,21 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bignat.toutdoux.AppDatabase;
 import com.bignat.toutdoux.R;
+import com.bignat.toutdoux.day_view.day_sections.DayRow;
+import com.bignat.toutdoux.day_view.day_sections.DaySectionTitle;
 import com.bignat.toutdoux.day_view.day_sections.daily_section.DailyItem;
 
 import java.util.List;
 
-public class DayViewAdapter extends RecyclerView.Adapter<DayViewAdapter.DayViewHolder> {
-    private List<DailyItem> dailyItems;
+public class DayViewAdapter extends RecyclerView.Adapter<DayViewAdapter.DayRowViewHolder> {
+    private List<DayRow> rows;
     private OnDailyItemSettingsClickListener dailyItemSettingsClickListener;
     private boolean isEditMode;
 
     public DayViewAdapter(
-            List<DailyItem> dailyItems
+            List<DayRow> rows
     ) {
-        this.dailyItems = dailyItems;
+        this.rows = rows;
         this.isEditMode = false;
     }
 
@@ -50,41 +53,43 @@ public class DayViewAdapter extends RecyclerView.Adapter<DayViewAdapter.DayViewH
 
     @NonNull
     @Override
-    public DayViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public DayRowViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.day_row_item, parent, false);
-        return new DayViewAdapter.DayViewHolder(view);
+        return new DayViewAdapter.DayRowViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull DayViewHolder holder, int position) {
-        DailyItem item = dailyItems.get(position);
+    public void onBindViewHolder(@NonNull DayRowViewHolder holder, int position) {
+        DayRow item = rows.get(position);
 
-        holder.title.setText(item.getTitle());
-        if (item.isOptional()) {
-            holder.title.setTypeface(null, Typeface.ITALIC);
-        } else {
-            holder.title.setTypeface(null, Typeface.NORMAL);
-        }
+        if (item instanceof DailyItem) {
+            DailyItem dailyItem = (DailyItem) item;
+            holder.title.setText(dailyItem.getTitle());
+            if (dailyItem.isOptional()) {
+                holder.title.setTypeface(null, Typeface.ITALIC);
+            } else {
+                holder.title.setTypeface(null, Typeface.NORMAL);
+            }
 
-        holder.checkBox.setChecked(item.isCompleted());
+            holder.checkBox.setChecked(dailyItem.isCompleted());
 
-        updateCheck(item, item.isCompleted(), holder);
+            updateCheck(dailyItem, dailyItem.isCompleted(), holder);
 
-        holder.checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            updateCheck(item, isChecked, holder);
-            AppDatabase db = AppDatabase.getDatabase(holder.itemView.getContext());
-            db.dailyItemDao().update(item);   // update in database
-        });
+            holder.checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                updateCheck(dailyItem, isChecked, holder);
+                AppDatabase db = AppDatabase.getDatabase(holder.itemView.getContext());
+                db.dailyItemDao().update(dailyItem);   // update in database
+            });
 
-        if (isEditMode) {
-            holder.dragHandle.setVisibility(View.VISIBLE);
-            holder.settingsButton.setVisibility(View.VISIBLE);
-            holder.checkBox.setVisibility(View.GONE);
-        } else {
-            holder.dragHandle.setVisibility(View.GONE);
-            holder.settingsButton.setVisibility(View.GONE);
-            holder.checkBox.setVisibility(View.VISIBLE);
-        }
+            if (isEditMode) {
+                holder.dragHandle.setVisibility(View.VISIBLE);
+                holder.settingsButton.setVisibility(View.VISIBLE);
+                holder.checkBox.setVisibility(View.GONE);
+            } else {
+                holder.dragHandle.setVisibility(View.GONE);
+                holder.settingsButton.setVisibility(View.GONE);
+                holder.checkBox.setVisibility(View.VISIBLE);
+            }
 
 //        holder.dragHandle.setOnTouchListener((v, event) -> {
 //            if (event.getAction() == MotionEvent.ACTION_DOWN) {
@@ -93,17 +98,28 @@ public class DayViewAdapter extends RecyclerView.Adapter<DayViewAdapter.DayViewH
 //            return false;
 //        });
 
-        holder.settingsButton.setOnClickListener(v -> {
-            dailyItemSettingsClickListener.onDailyItemSettingsClick(position);
-        });
+            holder.settingsButton.setOnClickListener(v -> {
+                dailyItemSettingsClickListener.onDailyItemSettingsClick(position);
+            });
+        } else if (item instanceof DaySectionTitle) {
+            DaySectionTitle sectionTitle = (DaySectionTitle) item;
+            holder.title.setText(sectionTitle.getSectionTitle());
+            holder.title.setAlpha(1f);
+            holder.title.setTextSize(22f);
+            holder.title.setGravity(Gravity.CENTER);
+            holder.title.setTypeface(null, Typeface.NORMAL);
+            holder.dragHandle.setVisibility(View.GONE);
+            holder.settingsButton.setVisibility(View.GONE);
+            holder.checkBox.setVisibility(View.GONE);
+        }
     }
 
     @Override
     public int getItemCount() {
-        return dailyItems.size();
+        return rows.size();
     }
 
-    private void updateCheck(DailyItem item, boolean isChecked, DayViewAdapter.DayViewHolder holder) {
+    private void updateCheck(DailyItem item, boolean isChecked, DayViewAdapter.DayRowViewHolder holder) {
         item.setCompleted(isChecked);
         if (item.isCompleted()) {
             holder.title.setAlpha(0.5f);
@@ -114,13 +130,13 @@ public class DayViewAdapter extends RecyclerView.Adapter<DayViewAdapter.DayViewH
         }
     }
 
-    static class DayViewHolder extends RecyclerView.ViewHolder {
+    static class DayRowViewHolder extends RecyclerView.ViewHolder {
         CheckBox checkBox;
         TextView title;
         ImageView dragHandle;
         ImageButton settingsButton;
 
-        DayViewHolder(View itemView) {
+        DayRowViewHolder(View itemView) {
             super(itemView);
             checkBox = itemView.findViewById(R.id.checkBox);
             title = itemView.findViewById(R.id.textTitle);

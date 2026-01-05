@@ -15,6 +15,7 @@ import androidx.appcompat.app.AlertDialog;
 
 import com.bignat.toutdoux.R;
 import com.bignat.toutdoux.day_view.DayViewFragment;
+import com.bignat.toutdoux.day_view.day_sections.DayRow;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 public class EditDailyItemBottomSheet extends BottomSheetDialogFragment {
@@ -58,8 +59,16 @@ public class EditDailyItemBottomSheet extends BottomSheetDialogFragment {
         Button cancelButton = view.findViewById(R.id.cancelButton);
         Button saveButton = view.findViewById(R.id.saveButton);
 
-        DailyItem item = parentFragment.getDailyItems().get(itemPosition);
+        cancelButton.setOnClickListener(v -> {
+            dismiss();
+        });
 
+        DayRow rowItem = parentFragment.getRows().get(itemPosition);
+
+        if (!(rowItem instanceof DailyItem))
+            return;
+
+        DailyItem item = (DailyItem) rowItem;
         titleEdit.setText(item.getTitle());
         completedCheck.setChecked(item.isCompleted());
         optionalCheck.setChecked(item.isOptional());
@@ -70,10 +79,6 @@ public class EditDailyItemBottomSheet extends BottomSheetDialogFragment {
             item.setOptional(optionalCheck.isChecked());
             parentFragment.getDailyItemDao().update(item);
             parentFragment.getAdapter().notifyItemChanged(itemPosition);
-            dismiss();
-        });
-
-        cancelButton.setOnClickListener(v -> {
             dismiss();
         });
 
@@ -125,9 +130,9 @@ public class EditDailyItemBottomSheet extends BottomSheetDialogFragment {
         parentFragment.getDailyItemDao().delete(item);
 
         // Delete from list
-        int index = parentFragment.getDailyItems().indexOf(item);
+        int index = parentFragment.getRows().indexOf(item);
         if (index != -1) {
-            parentFragment.getDailyItems().remove(index);
+            parentFragment.getRows().remove(index);
             parentFragment.getAdapter().notifyItemRemoved(index);
         }
     }

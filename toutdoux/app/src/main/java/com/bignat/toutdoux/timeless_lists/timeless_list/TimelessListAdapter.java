@@ -61,12 +61,12 @@ public class TimelessListAdapter extends RecyclerView.Adapter<TimelessListAdapte
             holder.textTitle.setTypeface(null, Typeface.NORMAL);
         }
 
+        updateCheck(item, holder);
+        holder.checkBox.setOnCheckedChangeListener(null);
         holder.checkBox.setChecked(item.isCompleted());
-
-        updateCheck(item, item.isCompleted(), holder);
-
         holder.checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            updateCheck(item, isChecked, holder);
+            item.setCompleted(isChecked);
+            updateCheck(item, holder);
             AppDatabase db = AppDatabase.getDatabase(holder.itemView.getContext());
             db.timelessListDao().update(item);   // update in database
         });
@@ -93,8 +93,7 @@ public class TimelessListAdapter extends RecyclerView.Adapter<TimelessListAdapte
         });
     }
 
-    private void updateCheck(TimelessItem item, boolean isChecked, TimelessViewHolder holder) {
-        item.setCompleted(isChecked);
+    private void updateCheck(TimelessItem item, TimelessViewHolder holder) {
         if (item.isCompleted()) {
             holder.textTitle.setAlpha(0.5f);
             holder.checkBox.setAlpha(0.5f);

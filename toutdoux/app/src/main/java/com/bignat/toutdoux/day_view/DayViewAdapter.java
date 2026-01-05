@@ -1,6 +1,7 @@
 package com.bignat.toutdoux.day_view;
 
 import android.graphics.Typeface;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -65,18 +66,21 @@ public class DayViewAdapter extends RecyclerView.Adapter<DayViewAdapter.DayRowVi
         if (item instanceof DailyItem) {
             DailyItem dailyItem = (DailyItem) item;
             holder.title.setText(dailyItem.getTitle());
+            holder.title.setTextSize(18f);
+            holder.title.setGravity(Gravity.CENTER_VERTICAL);
+
             if (dailyItem.isOptional()) {
                 holder.title.setTypeface(null, Typeface.ITALIC);
             } else {
                 holder.title.setTypeface(null, Typeface.NORMAL);
             }
 
+            updateCheck(dailyItem, holder);
+            holder.checkBox.setOnCheckedChangeListener(null);
             holder.checkBox.setChecked(dailyItem.isCompleted());
-
-            updateCheck(dailyItem, dailyItem.isCompleted(), holder);
-
             holder.checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                updateCheck(dailyItem, isChecked, holder);
+                dailyItem.setCompleted(isChecked);
+                updateCheck(dailyItem, holder);
                 AppDatabase db = AppDatabase.getDatabase(holder.itemView.getContext());
                 db.dailyItemDao().update(dailyItem);   // update in database
             });
@@ -114,20 +118,19 @@ public class DayViewAdapter extends RecyclerView.Adapter<DayViewAdapter.DayRowVi
         }
     }
 
-    @Override
-    public int getItemCount() {
-        return rows.size();
-    }
-
-    private void updateCheck(DailyItem item, boolean isChecked, DayViewAdapter.DayRowViewHolder holder) {
-        item.setCompleted(isChecked);
-        if (item.isCompleted()) {
+    private void updateCheck(DailyItem dailyItem, DayRowViewHolder holder) {
+        if (dailyItem.isCompleted()) {
             holder.title.setAlpha(0.5f);
             holder.checkBox.setAlpha(0.5f);
         } else {
             holder.title.setAlpha(1f);
             holder.checkBox.setAlpha(1f);
         }
+    }
+
+    @Override
+    public int getItemCount() {
+        return rows.size();
     }
 
     static class DayRowViewHolder extends RecyclerView.ViewHolder {

@@ -78,6 +78,7 @@ public class DayViewFragment extends Fragment {
         rows = new ArrayList<>();
         rows.add(new DaySectionTitle("Daily"));
         rows.addAll(dailyItems);
+        rows.add(new DaySectionTitle("To do"));
         adapter = new DayViewAdapter(rows);
 
         // RecyclerView
@@ -139,7 +140,7 @@ public class DayViewFragment extends Fragment {
                 long newId = dailyItemDao.insert(newItem);
                 newItem.id = (int) newId;
 
-                dailyItems.add(newItem);
+//                dailyItems.add(newItem);
                 rows.add(newItem);
                 adapter.notifyItemInserted(rows.size() - 1);
                 recyclerView.scrollToPosition(rows.size() - 1);

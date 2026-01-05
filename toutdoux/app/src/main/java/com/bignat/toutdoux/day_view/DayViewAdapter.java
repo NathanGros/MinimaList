@@ -20,6 +20,7 @@ import com.bignat.toutdoux.R;
 import com.bignat.toutdoux.day_view.day_sections.DayRow;
 import com.bignat.toutdoux.day_view.day_sections.DaySectionTitle;
 import com.bignat.toutdoux.day_view.day_sections.daily_section.DailyItem;
+import com.bignat.toutdoux.day_view.day_sections.timed_section.TimedItem;
 
 import java.util.List;
 
@@ -63,7 +64,18 @@ public class DayViewAdapter extends RecyclerView.Adapter<DayViewAdapter.DayRowVi
     public void onBindViewHolder(@NonNull DayRowViewHolder holder, int position) {
         DayRow item = rows.get(position);
 
-        if (item instanceof DailyItem) {
+        if (item instanceof DaySectionTitle) {
+            DaySectionTitle sectionTitle = (DaySectionTitle) item;
+            holder.title.setText(sectionTitle.getSectionTitle());
+            holder.title.setAlpha(1f);
+            holder.title.setTextSize(22f);
+            holder.title.setGravity(Gravity.CENTER);
+            holder.title.setTypeface(null, Typeface.NORMAL);
+            holder.dragHandle.setVisibility(View.GONE);
+            holder.settingsButton.setVisibility(View.GONE);
+            holder.checkBox.setVisibility(View.GONE);
+        }
+        else if (item instanceof DailyItem) {
             DailyItem dailyItem = (DailyItem) item;
             holder.title.setText(dailyItem.getTitle());
             holder.title.setTextSize(18f);
@@ -75,12 +87,12 @@ public class DayViewAdapter extends RecyclerView.Adapter<DayViewAdapter.DayRowVi
                 holder.title.setTypeface(null, Typeface.NORMAL);
             }
 
-            updateCheck(dailyItem, holder);
+            updateCheckDailyItem(dailyItem, holder);
             holder.checkBox.setOnCheckedChangeListener(null);
             holder.checkBox.setChecked(dailyItem.isCompleted());
             holder.checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
                 dailyItem.setCompleted(isChecked);
-                updateCheck(dailyItem, holder);
+                updateCheckDailyItem(dailyItem, holder);
                 AppDatabase db = AppDatabase.getDatabase(holder.itemView.getContext());
                 db.dailyItemDao().update(dailyItem);   // update in database
             });
@@ -105,21 +117,65 @@ public class DayViewAdapter extends RecyclerView.Adapter<DayViewAdapter.DayRowVi
             holder.settingsButton.setOnClickListener(v -> {
                 dailyItemSettingsClickListener.onDailyItemSettingsClick(position);
             });
-        } else if (item instanceof DaySectionTitle) {
-            DaySectionTitle sectionTitle = (DaySectionTitle) item;
-            holder.title.setText(sectionTitle.getSectionTitle());
-            holder.title.setAlpha(1f);
-            holder.title.setTextSize(22f);
-            holder.title.setGravity(Gravity.CENTER);
-            holder.title.setTypeface(null, Typeface.NORMAL);
-            holder.dragHandle.setVisibility(View.GONE);
-            holder.settingsButton.setVisibility(View.GONE);
-            holder.checkBox.setVisibility(View.GONE);
+        }
+        else if (item instanceof TimedItem) {
+            TimedItem timedItem = (TimedItem) item;
+
+            holder.title.setText(timedItem.getTitle());
+            holder.title.setTextSize(18f);
+            holder.title.setGravity(Gravity.CENTER_VERTICAL);
+
+            if (timedItem.isOptional()) {
+                holder.title.setTypeface(null, Typeface.ITALIC);
+            } else {
+                holder.title.setTypeface(null, Typeface.NORMAL);
+            }
+
+            updateCheckTimedItem(timedItem, holder);
+            holder.checkBox.setOnCheckedChangeListener(null);
+            holder.checkBox.setChecked(timedItem.isCompleted());
+            holder.checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                timedItem.setCompleted(isChecked);
+                updateCheckTimedItem(timedItem, holder);
+                AppDatabase db = AppDatabase.getDatabase(holder.itemView.getContext());
+                db.timedItemDao().update(timedItem);   // update in database
+            });
+
+            if (isEditMode) {
+                holder.dragHandle.setVisibility(View.VISIBLE);
+                holder.settingsButton.setVisibility(View.VISIBLE);
+                holder.checkBox.setVisibility(View.GONE);
+            } else {
+                holder.dragHandle.setVisibility(View.GONE);
+                holder.settingsButton.setVisibility(View.GONE);
+                holder.checkBox.setVisibility(View.VISIBLE);
+            }
+
+//        holder.dragHandle.setOnTouchListener((v, event) -> {
+//            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+//                itemTouchHelper.startDrag(holder);
+//            }
+//            return false;
+//        });
+
+//            holder.settingsButton.setOnClickListener(v -> {
+//                timedItemSettingsClickListener.onTimedItemSettingsClick(position);
+//            });
         }
     }
 
-    private void updateCheck(DailyItem dailyItem, DayRowViewHolder holder) {
+    private void updateCheckDailyItem(DailyItem dailyItem, DayRowViewHolder holder) {
         if (dailyItem.isCompleted()) {
+            holder.title.setAlpha(0.5f);
+            holder.checkBox.setAlpha(0.5f);
+        } else {
+            holder.title.setAlpha(1f);
+            holder.checkBox.setAlpha(1f);
+        }
+    }
+
+    private void updateCheckTimedItem(TimedItem timedItem, DayRowViewHolder holder) {
+        if (timedItem.isCompleted()) {
             holder.title.setAlpha(0.5f);
             holder.checkBox.setAlpha(0.5f);
         } else {

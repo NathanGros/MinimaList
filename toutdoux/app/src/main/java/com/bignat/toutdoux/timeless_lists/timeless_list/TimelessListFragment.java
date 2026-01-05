@@ -165,7 +165,7 @@ public class TimelessListFragment extends Fragment {
     }
 
     /**
-     * Builds and shows the "remove item" dialog
+     * Opens the item settings bottomSheet
      */
     private void openTimelessItemSettings(int position) {
         EditTimelessItemBottomSheet sheet = new EditTimelessItemBottomSheet(position, this);

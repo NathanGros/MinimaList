@@ -21,10 +21,7 @@ import com.bignat.toutdoux.R;
 import com.bignat.toutdoux.day_view.day_sections.DayRow;
 import com.bignat.toutdoux.day_view.day_sections.daily_section.DailyItem;
 import com.bignat.toutdoux.day_view.day_sections.daily_section.DailyItemDao;
-import com.bignat.toutdoux.timeless_lists.timeless_list.TimelessListAdapter;
-import com.bignat.toutdoux.timeless_lists.timeless_list.TimelessListDao;
-import com.bignat.toutdoux.timeless_lists.timeless_list.timeless_item.TimelessItem;
-import com.bignat.toutdoux.timeless_lists.timeless_list.timeless_item.TimelessItemTouchHelper;
+import com.bignat.toutdoux.day_view.day_sections.daily_section.EditDailyItemBottomSheet;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.List;
@@ -42,6 +39,18 @@ public class DayViewFragment extends Fragment {
     private FloatingActionButton editModeButton;
 
     public DayViewFragment() {}
+
+    public DayViewAdapter getAdapter() {
+        return adapter;
+    }
+
+    public List<DailyItem> getDailyItems() {
+        return dailyItems;
+    }
+
+    public DailyItemDao getDailyItemDao() {
+        return dailyItemDao;
+    }
 
     @Override
     public View onCreateView(
@@ -68,7 +77,7 @@ public class DayViewFragment extends Fragment {
         recyclerView.setAdapter(adapter);
 
         // Open item settings
-//        adapter.setOnItemSettingsClickListener(this::openTimelessItemSettings);
+        adapter.setOnDailyItemSettingsClickListener(this::openDailyItemSettings);
 
         // Add item button
         addItemButton = view.findViewById(R.id.addItemButton);
@@ -139,6 +148,14 @@ public class DayViewFragment extends Fragment {
         if (dialog.getWindow() != null) {
             dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         }
+    }
+
+    /**
+     * Opens the daily item settings bottomSheet
+     */
+    private void openDailyItemSettings(int position) {
+        EditDailyItemBottomSheet sheet = new EditDailyItemBottomSheet(position, this);
+        sheet.show(getParentFragmentManager(), "edit_daily");
     }
 
     private void setEditMode(boolean newEditMode) {

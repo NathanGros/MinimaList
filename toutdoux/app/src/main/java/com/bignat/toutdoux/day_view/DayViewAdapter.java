@@ -21,6 +21,7 @@ import java.util.List;
 
 public class DayViewAdapter extends RecyclerView.Adapter<DayViewAdapter.DayViewHolder> {
     private List<DailyItem> dailyItems;
+    private OnDailyItemSettingsClickListener dailyItemSettingsClickListener;
     private boolean isEditMode;
 
     public DayViewAdapter(
@@ -37,6 +38,14 @@ public class DayViewAdapter extends RecyclerView.Adapter<DayViewAdapter.DayViewH
 
     public boolean isEditMode() {
         return isEditMode;
+    }
+
+    public interface OnDailyItemSettingsClickListener {
+        void onDailyItemSettingsClick(int position);
+    }
+
+    public void setOnDailyItemSettingsClickListener(OnDailyItemSettingsClickListener dailyItemSettingsClickListener) {
+        this.dailyItemSettingsClickListener = dailyItemSettingsClickListener;
     }
 
     @NonNull
@@ -83,10 +92,10 @@ public class DayViewAdapter extends RecyclerView.Adapter<DayViewAdapter.DayViewH
 //            }
 //            return false;
 //        });
-//
-//        holder.settingsButton.setOnClickListener(v -> {
-//            settingsListener.onItemSettingsClick(position);
-//        });
+
+        holder.settingsButton.setOnClickListener(v -> {
+            dailyItemSettingsClickListener.onDailyItemSettingsClick(position);
+        });
     }
 
     @Override

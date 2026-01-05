@@ -5,8 +5,8 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import android.content.Context;
 
-import com.bignat.toutdoux.day_view.DailyListDao;
-import com.bignat.toutdoux.day_view.daily_item.DailyItem;
+import com.bignat.toutdoux.day_view.day_sections.daily_section.DailyItem;
+import com.bignat.toutdoux.day_view.day_sections.daily_section.DailyItemDao;
 import com.bignat.toutdoux.timeless_lists.TimelessListsDao;
 import com.bignat.toutdoux.timeless_lists.timeless_list.TimelessList;
 import com.bignat.toutdoux.timeless_lists.timeless_list.TimelessListDao;
@@ -16,8 +16,7 @@ import com.bignat.toutdoux.timeless_lists.timeless_list.timeless_item.TimelessIt
 public abstract class AppDatabase extends RoomDatabase {
     public abstract TimelessListDao timelessListDao();
     public abstract TimelessListsDao timelessListsDao();
-
-    public abstract DailyListDao dailyListDao();
+    public abstract DailyItemDao dailyItemDao();
 
     private static AppDatabase INSTANCE;
 

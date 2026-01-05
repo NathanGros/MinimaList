@@ -1,10 +1,12 @@
-package com.bignat.toutdoux.day_view.daily_item;
+package com.bignat.toutdoux.day_view.day_sections.daily_section;
 
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+import com.bignat.toutdoux.day_view.day_sections.DayRow;
+
 @Entity
-public class DailyItem {
+public class DailyItem implements DayRow {
     @PrimaryKey(autoGenerate = true)
     public int id;
     public String title;

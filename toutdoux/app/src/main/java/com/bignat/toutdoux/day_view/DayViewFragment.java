@@ -5,8 +5,11 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.ItemTouchHelper;
@@ -19,6 +22,8 @@ import com.bignat.toutdoux.day_view.day_sections.DayRow;
 import com.bignat.toutdoux.day_view.day_sections.daily_section.DailyItem;
 import com.bignat.toutdoux.day_view.day_sections.daily_section.DailyItemDao;
 import com.bignat.toutdoux.timeless_lists.timeless_list.TimelessListAdapter;
+import com.bignat.toutdoux.timeless_lists.timeless_list.TimelessListDao;
+import com.bignat.toutdoux.timeless_lists.timeless_list.timeless_item.TimelessItem;
 import com.bignat.toutdoux.timeless_lists.timeless_list.timeless_item.TimelessItemTouchHelper;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -67,7 +72,7 @@ public class DayViewFragment extends Fragment {
 
         // Add item button
         addItemButton = view.findViewById(R.id.addItemButton);
-//        addItemButton.setOnClickListener(v -> showAddTimelessItemDialog(timelessListDao));
+        addItemButton.setOnClickListener(v -> showAddDayItemDialog());
 
         // Toggle edit mode button
         editModeButton = view.findViewById(R.id.editModeButton);
@@ -82,6 +87,58 @@ public class DayViewFragment extends Fragment {
         setEditMode(false);
 
         return view;
+    }
+
+    private void showAddDayItemDialog() {
+        AlertDialog dialog = new AlertDialog.Builder(requireContext()).create();
+
+        LayoutInflater inflater = LayoutInflater.from(requireContext());
+        View dialogView = inflater.inflate(R.layout.alert_dialog, null);
+
+        // Get elements
+        TextView dialogTitle = dialogView.findViewById(R.id.dialogTitle);
+        TextView dialogDescription = dialogView.findViewById(R.id.dialogDescription);
+        EditText input = dialogView.findViewById(R.id.etItemTitle);
+        Button positiveButton = dialogView.findViewById(R.id.buttonPositive);
+        Button negativeButton = dialogView.findViewById(R.id.buttonNegative);
+
+        // Set values
+        dialogTitle.setText("Add new item");
+        dialogDescription.setVisibility(View.GONE);
+        input.setHint("Item name");
+        positiveButton.setText("Add");
+        negativeButton.setText("Cancel");
+        dialog.setView(dialogView);
+
+        // Add button
+        positiveButton.setOnClickListener(v -> {
+            String title = input.getText().toString().trim();
+            if (!title.isEmpty()) {
+                // Add to list
+                DailyItem newItem = new DailyItem(title);
+                newItem.setOrderIndex(dailyItems.size());
+
+                long newId = dailyItemDao.insert(newItem);
+                newItem.id = (int) newId;
+
+                dailyItems.add(newItem);
+                adapter.notifyItemInserted(dailyItems.size() - 1);
+                recyclerView.scrollToPosition(dailyItems.size() - 1);
+
+                dialog.dismiss();
+            } else {
+                input.setError("Required");
+            }
+        });
+
+        // Cancel button
+        negativeButton.setOnClickListener(v -> dialog.cancel());
+
+        // Show
+        dialog.show();
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        }
     }
 
     private void setEditMode(boolean newEditMode) {

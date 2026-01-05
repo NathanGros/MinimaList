@@ -96,10 +96,10 @@ public class EditTimelessItemBottomSheet extends BottomSheetDialogFragment {
         Button negativeButton = dialogView.findViewById(R.id.buttonNegative);
 
         // Set values
-        dialogTitle.setText("Remove " + item.getTitle() + " ?");
-        dialogDescription.setText("Are you sure you want to remove this item?");
+        dialogTitle.setText("Delete " + item.getTitle() + " ?");
+        dialogDescription.setText("Are you sure you want to delete this item?");
         input.setVisibility(View.GONE);
-        positiveButton.setText("Remove");
+        positiveButton.setText("Delete");
         negativeButton.setText("Cancel");
         dialog.setView(dialogView);
 

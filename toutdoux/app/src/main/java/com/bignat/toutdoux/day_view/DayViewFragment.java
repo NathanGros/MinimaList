@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -95,7 +97,6 @@ public class DayViewFragment extends Fragment {
         timedItemDao = db.timedItemDao();
         timedItems = timedItemDao.getAll();
         rows.addAll(timedItems);
-        rows.add(new TimedItem("timed 1", new Date()));
         adapter = new DayViewAdapter(rows);
 
         // RecyclerView
@@ -129,40 +130,86 @@ public class DayViewFragment extends Fragment {
         AlertDialog dialog = new AlertDialog.Builder(requireContext()).create();
 
         LayoutInflater inflater = LayoutInflater.from(requireContext());
-        View dialogView = inflater.inflate(R.layout.alert_dialog, null);
+        View dialogView = inflater.inflate(R.layout.add_day_item_dialog, null);
 
         // Get elements
         TextView dialogTitle = dialogView.findViewById(R.id.dialogTitle);
-        TextView dialogDescription = dialogView.findViewById(R.id.dialogDescription);
-        EditText input = dialogView.findViewById(R.id.etItemTitle);
+        AutoCompleteTextView dropdown = dialogView.findViewById(R.id.itemTypeDropdown);
+        EditText input = dialogView.findViewById(R.id.itemTitleBox);
+        View layoutDaily = dialogView.findViewById(R.id.layoutDaily);
+        View layoutTimed = dialogView.findViewById(R.id.layoutTimed);
         Button positiveButton = dialogView.findViewById(R.id.buttonPositive);
         Button negativeButton = dialogView.findViewById(R.id.buttonNegative);
 
         // Set values
         dialogTitle.setText("Add new item");
-        dialogDescription.setVisibility(View.GONE);
+        String[] itemTypes = {"Daily", "Timed"};
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(
+                requireContext(),
+                android.R.layout.simple_list_item_1,
+                itemTypes
+        );
+        dropdown.setAdapter(arrayAdapter);
+        dropdown.setText(itemTypes[0], false);
         input.setHint("Item name");
+        layoutDaily.setVisibility(View.GONE);
+        layoutTimed.setVisibility(View.GONE);
         positiveButton.setText("Add");
         negativeButton.setText("Cancel");
         dialog.setView(dialogView);
+
+        // Dropdown menu
+        dropdown.setOnItemClickListener((parent, view, position, id) -> {
+            switch (position) {
+                case 0: // Daily
+                    layoutDaily.setVisibility(View.VISIBLE);
+                    layoutTimed.setVisibility(View.GONE);
+                    break;
+                case 1: // Timed
+                    layoutDaily.setVisibility(View.GONE);
+                    layoutTimed.setVisibility(View.VISIBLE);
+                    break;
+                default:
+                    layoutDaily.setVisibility(View.GONE);
+                    layoutTimed.setVisibility(View.GONE);
+                    break;
+            }
+        });
 
         // Add button
         positiveButton.setOnClickListener(v -> {
             String title = input.getText().toString().trim();
             if (!title.isEmpty()) {
-                // Add to list
-                DailyItem newItem = new DailyItem(title);
-                newItem.setOrderIndex(rows.size());
+                String selectedItemType = dropdown.getText().toString();
+                if (selectedItemType.equals("Daily")) {
+                    // Add to list
+                    DailyItem newItem = new DailyItem(title);
+                    newItem.setOrderIndex(rows.size());
 
-                long newId = dailyItemDao.insert(newItem);
-                newItem.id = (int) newId;
+                    long newId = dailyItemDao.insert(newItem);
+                    newItem.id = (int) newId;
 
-                dailyItems.add(newItem);
-                rows.add(newItem);
-                adapter.notifyItemInserted(rows.size() - 1);
-                recyclerView.scrollToPosition(rows.size() - 1);
+                    dailyItems.add(newItem);
+                    rows.add(newItem);
+                    adapter.notifyItemInserted(rows.size() - 1);
+                    recyclerView.scrollToPosition(rows.size() - 1);
 
-                dialog.dismiss();
+                    dialog.dismiss();
+                } else if (selectedItemType.equals("Timed")) {
+                    // Add to list
+                    TimedItem newItem = new TimedItem(title, new Date());
+                    newItem.setOrderIndex(rows.size());
+
+                    long newId = timedItemDao.insert(newItem);
+                    newItem.id = (int) newId;
+
+                    timedItems.add(newItem);
+                    rows.add(newItem);
+                    adapter.notifyItemInserted(rows.size() - 1);
+                    recyclerView.scrollToPosition(rows.size() - 1);
+
+                    dialog.dismiss();
+                }
             } else {
                 input.setError("Required");
             }

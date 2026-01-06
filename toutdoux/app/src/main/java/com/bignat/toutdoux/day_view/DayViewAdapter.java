@@ -27,6 +27,7 @@ import java.util.List;
 public class DayViewAdapter extends RecyclerView.Adapter<DayViewAdapter.DayRowViewHolder> {
     private List<DayRow> rows;
     private OnDailyItemSettingsClickListener dailyItemSettingsClickListener;
+    private OnTimedItemSettingsClickListener timedItemSettingsClickListener;
     private boolean isEditMode;
 
     public DayViewAdapter(
@@ -51,6 +52,14 @@ public class DayViewAdapter extends RecyclerView.Adapter<DayViewAdapter.DayRowVi
 
     public void setOnDailyItemSettingsClickListener(OnDailyItemSettingsClickListener dailyItemSettingsClickListener) {
         this.dailyItemSettingsClickListener = dailyItemSettingsClickListener;
+    }
+
+    public interface OnTimedItemSettingsClickListener {
+        void onTimedItemSettingsClick(int position);
+    }
+
+    public void setOnTimedItemSettingsClickListener(OnTimedItemSettingsClickListener timedItemSettingsClickListener) {
+        this.timedItemSettingsClickListener = timedItemSettingsClickListener;
     }
 
     @NonNull
@@ -158,9 +167,9 @@ public class DayViewAdapter extends RecyclerView.Adapter<DayViewAdapter.DayRowVi
 //            return false;
 //        });
 
-//            holder.settingsButton.setOnClickListener(v -> {
-//                timedItemSettingsClickListener.onTimedItemSettingsClick(position);
-//            });
+            holder.settingsButton.setOnClickListener(v -> {
+                timedItemSettingsClickListener.onTimedItemSettingsClick(position);
+            });
         }
     }
 

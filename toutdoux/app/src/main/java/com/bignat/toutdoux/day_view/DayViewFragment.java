@@ -25,6 +25,7 @@ import com.bignat.toutdoux.day_view.day_sections.DaySectionTitle;
 import com.bignat.toutdoux.day_view.day_sections.daily_section.DailyItem;
 import com.bignat.toutdoux.day_view.day_sections.daily_section.DailyItemDao;
 import com.bignat.toutdoux.day_view.day_sections.daily_section.EditDailyItemBottomSheet;
+import com.bignat.toutdoux.day_view.day_sections.timed_section.EditTimedItemBottomSheet;
 import com.bignat.toutdoux.day_view.day_sections.timed_section.TimedItem;
 import com.bignat.toutdoux.day_view.day_sections.timed_section.TimedItemDao;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -106,6 +107,9 @@ public class DayViewFragment extends Fragment {
 
         // Open daily item settings
         adapter.setOnDailyItemSettingsClickListener(this::openDailyItemSettings);
+
+        // Open timed item settings
+        adapter.setOnTimedItemSettingsClickListener(this::openTimedItemSettings);
 
         // Add item button
         addItemButton = view.findViewById(R.id.addItemButton);
@@ -233,6 +237,13 @@ public class DayViewFragment extends Fragment {
         sheet.show(getParentFragmentManager(), "edit_daily");
     }
 
+    /**
+     * Opens the timed item settings bottomSheet
+     */
+    private void openTimedItemSettings(int position) {
+        EditTimedItemBottomSheet sheet = new EditTimedItemBottomSheet(position, this);
+        sheet.show(getParentFragmentManager(), "edit_timed");
+    }
     private void setEditMode(boolean newEditMode) {
         adapter.setEditMode(newEditMode);
 

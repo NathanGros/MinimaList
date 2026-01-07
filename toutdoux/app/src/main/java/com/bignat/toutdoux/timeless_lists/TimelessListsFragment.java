@@ -130,10 +130,9 @@ public class TimelessListsFragment extends Fragment {
 
     /**
      * Builds and shows the "remove list" dialog
-     * @param position
      */
-    private void openTimelessListSettings(int position) {
-        EditTimelessListBottomSheet sheet = new EditTimelessListBottomSheet(position, this);
+    private void openTimelessListSettings(TimelessList timelessList) {
+        EditTimelessListBottomSheet sheet = new EditTimelessListBottomSheet(timelessList, this);
         sheet.show(getParentFragmentManager(), "edit_list");
     }
 

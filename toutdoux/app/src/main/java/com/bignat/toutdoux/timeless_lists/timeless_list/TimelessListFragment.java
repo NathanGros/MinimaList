@@ -167,8 +167,8 @@ public class TimelessListFragment extends Fragment {
     /**
      * Opens the item settings bottomSheet
      */
-    private void openTimelessItemSettings(int position) {
-        EditTimelessItemBottomSheet sheet = new EditTimelessItemBottomSheet(position, this);
+    private void openTimelessItemSettings(TimelessItem timelessItem) {
+        EditTimelessItemBottomSheet sheet = new EditTimelessItemBottomSheet(timelessItem, this);
         sheet.show(getParentFragmentManager(), "edit_todo");
     }
 

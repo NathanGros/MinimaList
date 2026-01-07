@@ -18,14 +18,14 @@ import com.bignat.toutdoux.timeless_lists.timeless_list.TimelessListFragment;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 public class EditTimelessItemBottomSheet extends BottomSheetDialogFragment {
-    private int itemPosition;
+    private TimelessItem timelessItem;
     private TimelessListFragment parentFragment;
 
     public EditTimelessItemBottomSheet(
-        int itemPosition,
-        TimelessListFragment context
+            TimelessItem timelessItem,
+            TimelessListFragment context
     ) {
-        this.itemPosition = itemPosition;
+        this.timelessItem = timelessItem;
         this.parentFragment = context;
     }
 
@@ -58,18 +58,17 @@ public class EditTimelessItemBottomSheet extends BottomSheetDialogFragment {
         Button cancelButton = view.findViewById(R.id.cancelButton);
         Button saveButton = view.findViewById(R.id.saveButton);
 
-        TimelessItem item = parentFragment.getItems().get(itemPosition);
-
-        titleEdit.setText(item.getTitle());
-        completedCheck.setChecked(item.isCompleted());
-        optionalCheck.setChecked(item.isOptional());
+        titleEdit.setText(timelessItem.getTitle());
+        completedCheck.setChecked(timelessItem.isCompleted());
+        optionalCheck.setChecked(timelessItem.isOptional());
 
         saveButton.setOnClickListener(v -> {
-            item.setTitle(titleEdit.getText().toString().trim());
-            item.setCompleted(completedCheck.isChecked());
-            item.setOptional(optionalCheck.isChecked());
-            parentFragment.getTimelessListDao().update(item);
-            parentFragment.getAdapter().notifyItemChanged(itemPosition);
+            timelessItem.setTitle(titleEdit.getText().toString().trim());
+            timelessItem.setCompleted(completedCheck.isChecked());
+            timelessItem.setOptional(optionalCheck.isChecked());
+            parentFragment.getTimelessListDao().update(timelessItem);
+            int index = parentFragment.getItems().indexOf(timelessItem);
+            parentFragment.getAdapter().notifyItemChanged(index);
             dismiss();
         });
 
@@ -78,7 +77,7 @@ public class EditTimelessItemBottomSheet extends BottomSheetDialogFragment {
         });
 
         deleteButton.setOnClickListener(v -> {
-            showDeleteConfirmation(item);
+            showDeleteConfirmation(timelessItem);
         });
     }
 

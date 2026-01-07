@@ -34,7 +34,7 @@ public class TimelessListsAdapter extends RecyclerView.Adapter<TimelessListsAdap
     }
 
     public interface OnSettingsClickListener {
-        void onSettingsClick(int position);
+        void onSettingsClick(TimelessList timelessList);
     }
 
     public void setOnListClickListener(OnListClickListener listener) {
@@ -88,7 +88,7 @@ public class TimelessListsAdapter extends RecyclerView.Adapter<TimelessListsAdap
 
         // Open list settings
         holder.settingsButton.setOnClickListener(v -> {
-            settingsClickListener.onSettingsClick(position);
+            settingsClickListener.onSettingsClick(timelessList);
         });
     }
 

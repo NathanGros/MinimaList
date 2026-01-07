@@ -1,5 +1,7 @@
 package com.bignat.toutdoux.day_view;
 
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -28,8 +30,12 @@ import com.bignat.toutdoux.day_view.day_sections.timed_section.TimedItem;
 import com.bignat.toutdoux.day_view.day_sections.timed_section.TimedItemDao;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Fragment used inside the day view
@@ -129,6 +135,8 @@ public class DayViewFragment extends Fragment {
         EditText input = dialogView.findViewById(R.id.itemTitleBox);
         View layoutDaily = dialogView.findViewById(R.id.layoutDaily);
         View layoutTimed = dialogView.findViewById(R.id.layoutTimed);
+        EditText dateInput = dialogView.findViewById(R.id.deadlineDate);
+        EditText timeInput = dialogView.findViewById(R.id.deadlineTime);
         Button positiveButton = dialogView.findViewById(R.id.buttonPositive);
         Button negativeButton = dialogView.findViewById(R.id.buttonNegative);
 
@@ -149,6 +157,12 @@ public class DayViewFragment extends Fragment {
         negativeButton.setText("Cancel");
         dialog.setView(dialogView);
 
+        Calendar selectedDateTime = Calendar.getInstance();
+        Date now = selectedDateTime.getTime();
+        dateInput.setText(DateFormat.getDateInstance(DateFormat.MEDIUM).format(now));
+        DateFormat timeFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
+        timeInput.setText(timeFormat.format(now));
+
         // Dropdown menu
         dropdown.setOnItemClickListener((parent, view, position, id) -> {
             switch (position) {
@@ -165,6 +179,48 @@ public class DayViewFragment extends Fragment {
                     layoutTimed.setVisibility(View.GONE);
                     break;
             }
+        });
+
+        dateInput.setOnClickListener(v -> {
+            Calendar cal = Calendar.getInstance();
+
+            DatePickerDialog datePicker = new DatePickerDialog(
+                    requireContext(),
+                    (view, year, month, dayOfMonth) -> {
+                        selectedDateTime.set(Calendar.YEAR, year);
+                        selectedDateTime.set(Calendar.MONTH, month);
+                        selectedDateTime.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+
+                        Date date = selectedDateTime.getTime();
+                        dateInput.setText(DateFormat.getDateInstance(DateFormat.MEDIUM).format(date));
+                    },
+                    cal.get(Calendar.YEAR),
+                    cal.get(Calendar.MONTH),
+                    cal.get(Calendar.DAY_OF_MONTH)
+            );
+
+            datePicker.show();
+        });
+
+        timeInput.setOnClickListener(v -> {
+            Calendar cal = Calendar.getInstance();
+
+            TimePickerDialog timePicker = new TimePickerDialog(
+                    requireContext(),
+                    (view, hourOfDay, minute) -> {
+                        selectedDateTime.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                        selectedDateTime.set(Calendar.MINUTE, minute);
+                        selectedDateTime.set(Calendar.SECOND, 0);
+
+                        String time = String.format("%02d:%02d", hourOfDay, minute);
+                        timeInput.setText(time);
+                    },
+                    cal.get(Calendar.HOUR_OF_DAY),
+                    cal.get(Calendar.MINUTE),
+                    true
+            );
+
+            timePicker.show();
         });
 
         // Add button
@@ -187,15 +243,17 @@ public class DayViewFragment extends Fragment {
                     dialog.dismiss();
                 } else if (selectedItemType.equals("Timed")) {
                     // Add to list
-                    TimedItem newItem = new TimedItem(title, new Date());
-                    newItem.setOrderIndex(timedItems.size());
+                    Date deadline = selectedDateTime.getTime();
+                    TimedItem newItem = new TimedItem(title, deadline);
 
                     long newId = timedItemDao.insert(newItem);
                     newItem.id = (int) newId;
 
-                    timedItems.add(newItem);
-                    adapter.notifyItemInserted(dailyItems.size() + 1 + timedItems.size());
-                    recyclerView.scrollToPosition(dailyItems.size() + 1 + timedItems.size());
+                    timedItems.clear();
+                    timedItems.addAll(timedItemDao.getAll());
+                    adapter.notifyDataSetChanged();
+                    int index = timedItems.indexOf(newItem);
+                    recyclerView.scrollToPosition(1 + dailyItems.size() + index);
 
                     dialog.dismiss();
                 }

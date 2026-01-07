@@ -14,7 +14,6 @@ public class TimedItem {
     public boolean completed;
     public boolean optional;
     public boolean postponed;
-    public int orderIndex;
 
     public TimedItem(String title, Date deadline) {
         this.title = title;
@@ -62,13 +61,5 @@ public class TimedItem {
 
     public void setPostponed(boolean postponed) {
         this.postponed = postponed;
-    }
-
-    public int getOrderIndex() {
-        return orderIndex;
-    }
-
-    public void setOrderIndex(int orderIndex) {
-        this.orderIndex = orderIndex;
     }
 }

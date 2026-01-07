@@ -165,22 +165,15 @@ public class DayViewAdapter extends RecyclerView.Adapter<DayViewAdapter.DayRowVi
             db.timedItemDao().update(timedItem);   // update in database
         });
 
+        holder.dragHandle.setVisibility(View.GONE);
+
         if (isEditMode) {
-            holder.dragHandle.setVisibility(View.VISIBLE);
             holder.settingsButton.setVisibility(View.VISIBLE);
             holder.checkBox.setVisibility(View.GONE);
         } else {
-            holder.dragHandle.setVisibility(View.GONE);
             holder.settingsButton.setVisibility(View.GONE);
             holder.checkBox.setVisibility(View.VISIBLE);
         }
-
-//        holder.dragHandle.setOnTouchListener((v, event) -> {
-//            if (event.getAction() == MotionEvent.ACTION_DOWN) {
-//                itemTouchHelper.startDrag(holder);
-//            }
-//            return false;
-//        });
 
         holder.settingsButton.setOnClickListener(v -> {
             timedItemSettingsClickListener.onTimedItemSettingsClick(timedItem);

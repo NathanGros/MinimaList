@@ -1,5 +1,7 @@
 package com.bignat.toutdoux.day_view.day_sections.timed_section;
 
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +18,12 @@ import androidx.appcompat.app.AlertDialog;
 import com.bignat.toutdoux.R;
 import com.bignat.toutdoux.day_view.DayViewFragment;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
 public class EditTimedItemBottomSheet extends BottomSheetDialogFragment {
     private TimedItem timedItem;
@@ -52,27 +60,80 @@ public class EditTimedItemBottomSheet extends BottomSheetDialogFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         EditText titleEdit = view.findViewById(R.id.titleEdit);
+        EditText dateInput = view.findViewById(R.id.deadlineDate);
+        EditText timeInput = view.findViewById(R.id.deadlineTime);
         CheckBox completedCheck = view.findViewById(R.id.completedCheck);
         CheckBox optionalCheck = view.findViewById(R.id.optionalCheck);
         Button deleteButton = view.findViewById(R.id.deleteButton);
         Button cancelButton = view.findViewById(R.id.cancelButton);
         Button saveButton = view.findViewById(R.id.saveButton);
 
-        cancelButton.setOnClickListener(v -> {
-            dismiss();
-        });
+        Calendar selectedDateTime = Calendar.getInstance();
+        Date date = timedItem.getDeadline();
+        selectedDateTime.setTime(date);
+        DateFormat timeFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
 
         titleEdit.setText(timedItem.getTitle());
+        dateInput.setText(DateFormat.getDateInstance(DateFormat.MEDIUM).format(date));
+        timeInput.setText(timeFormat.format(date));
         completedCheck.setChecked(timedItem.isCompleted());
         optionalCheck.setChecked(timedItem.isOptional());
 
+        dateInput.setOnClickListener(v -> {
+            Calendar cal = Calendar.getInstance();
+
+            DatePickerDialog datePicker = new DatePickerDialog(
+                    requireContext(),
+                    (dateView, year, month, dayOfMonth) -> {
+                        selectedDateTime.set(Calendar.YEAR, year);
+                        selectedDateTime.set(Calendar.MONTH, month);
+                        selectedDateTime.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+
+                        Date newDate = selectedDateTime.getTime();
+                        dateInput.setText(DateFormat.getDateInstance(DateFormat.MEDIUM).format(newDate));
+                    },
+                    cal.get(Calendar.YEAR),
+                    cal.get(Calendar.MONTH),
+                    cal.get(Calendar.DAY_OF_MONTH)
+            );
+
+            datePicker.show();
+        });
+
+        timeInput.setOnClickListener(v -> {
+            Calendar cal = Calendar.getInstance();
+
+            TimePickerDialog timePicker = new TimePickerDialog(
+                    requireContext(),
+                    (timeView, hourOfDay, minute) -> {
+                        selectedDateTime.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                        selectedDateTime.set(Calendar.MINUTE, minute);
+                        selectedDateTime.set(Calendar.SECOND, 0);
+
+                        String time = String.format("%02d:%02d", hourOfDay, minute);
+                        timeInput.setText(time);
+                    },
+                    cal.get(Calendar.HOUR_OF_DAY),
+                    cal.get(Calendar.MINUTE),
+                    true
+            );
+
+            timePicker.show();
+        });
+
         saveButton.setOnClickListener(v -> {
             timedItem.setTitle(titleEdit.getText().toString().trim());
+            timedItem.setDeadline(selectedDateTime.getTime());
             timedItem.setCompleted(completedCheck.isChecked());
             timedItem.setOptional(optionalCheck.isChecked());
             parentFragment.getTimedItemDao().update(timedItem);
-            int index = parentFragment.getTimedItems().indexOf(timedItem);
-            parentFragment.getAdapter().notifyItemChanged(index + 1 + parentFragment.getDailyItems().size() + 1);
+            parentFragment.getTimedItems().clear();
+            parentFragment.getTimedItems().addAll(parentFragment.getTimedItemDao().getAll());
+            parentFragment.getAdapter().notifyDataSetChanged();
+            dismiss();
+        });
+
+        cancelButton.setOnClickListener(v -> {
             dismiss();
         });
 

@@ -42,7 +42,8 @@
         android:id="@+id/layoutDaily"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="gone" >
+        android:visibility="gone"
+        android:orientation="vertical" >
 
     </LinearLayout>
 
@@ -50,7 +51,24 @@
         android:id="@+id/layoutTimed"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="gone" >
+        android:visibility="gone"
+        android:orientation="vertical" >
+
+        <EditText
+            android:id="@+id/deadlineDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Deadline date"
+            android:focusable="false"
+            android:clickable="true" />
+
+        <EditText
+            android:id="@+id/deadlineTime"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Deadline time"
+            android:focusable="false"
+            android:clickable="true" />
 
     </LinearLayout>
 

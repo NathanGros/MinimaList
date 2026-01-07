@@ -10,7 +10,7 @@ import java.util.List;
 
 @Dao
 public interface TimedItemDao {
-    @Query("SELECT * FROM TimedItem ORDER BY orderIndex ASC")
+    @Query("SELECT * FROM TimedItem ORDER BY deadline ASC")
     List<TimedItem> getAll();
 
     @Insert

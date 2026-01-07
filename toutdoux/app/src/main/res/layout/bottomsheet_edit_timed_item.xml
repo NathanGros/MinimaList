@@ -15,6 +15,22 @@
         android:textColor="@color/text_normal"
         android:textSize="22sp"/>
 
+    <EditText
+        android:id="@+id/deadlineDate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Deadline date"
+        android:focusable="false"
+        android:clickable="true" />
+
+    <EditText
+        android:id="@+id/deadlineTime"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Deadline time"
+        android:focusable="false"
+        android:clickable="true" />
+
     <CheckBox
         android:id="@+id/completedCheck"
         android:text="  Completed"

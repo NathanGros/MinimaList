@@ -1,7 +1,6 @@
 package com.bignat.toutdoux.day_view.day_sections.daily_section;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,8 +15,9 @@ import androidx.appcompat.app.AlertDialog;
 
 import com.bignat.toutdoux.R;
 import com.bignat.toutdoux.day_view.DayViewFragment;
-import com.bignat.toutdoux.day_view.day_sections.DayRow;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+
+import java.util.List;
 
 public class EditDailyItemBottomSheet extends BottomSheetDialogFragment {
     private int itemPosition;
@@ -64,12 +64,11 @@ public class EditDailyItemBottomSheet extends BottomSheetDialogFragment {
             dismiss();
         });
 
-        DayRow rowItem = parentFragment.getRows().get(itemPosition);
-
-        if (!(rowItem instanceof DailyItem))
+        List<DailyItem> dailyItems = parentFragment.getDailyItems();
+        if (itemPosition < 1 || itemPosition > dailyItems.size())
             return;
+        DailyItem item = dailyItems.get(itemPosition - 1);
 
-        DailyItem item = (DailyItem) rowItem;
         titleEdit.setText(item.getTitle());
         completedCheck.setChecked(item.isCompleted());
         optionalCheck.setChecked(item.isOptional());
@@ -79,7 +78,7 @@ public class EditDailyItemBottomSheet extends BottomSheetDialogFragment {
             item.setCompleted(completedCheck.isChecked());
             item.setOptional(optionalCheck.isChecked());
             parentFragment.getDailyItemDao().update(item);
-            parentFragment.getAdapter().notifyItemChanged(itemPosition);
+            parentFragment.getAdapter().notifyItemChanged(itemPosition + 1);
             dismiss();
         });
 
@@ -131,10 +130,10 @@ public class EditDailyItemBottomSheet extends BottomSheetDialogFragment {
         parentFragment.getDailyItemDao().delete(item);
 
         // Delete from list
-        int index = parentFragment.getRows().indexOf(item);
+        int index = parentFragment.getDailyItems().indexOf(item);
         if (index != -1) {
-            parentFragment.getRows().remove(index);
-            parentFragment.getAdapter().notifyItemRemoved(index);
+            parentFragment.getDailyItems().remove(index);
+            parentFragment.getAdapter().notifyItemRemoved(index + 1);
         }
     }
 }

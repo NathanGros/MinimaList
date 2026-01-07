@@ -20,8 +20,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bignat.toutdoux.AppDatabase;
 import com.bignat.toutdoux.R;
-import com.bignat.toutdoux.day_view.day_sections.DayRow;
-import com.bignat.toutdoux.day_view.day_sections.DaySectionTitle;
 import com.bignat.toutdoux.day_view.day_sections.daily_section.DailyItem;
 import com.bignat.toutdoux.day_view.day_sections.daily_section.DailyItemDao;
 import com.bignat.toutdoux.day_view.day_sections.daily_section.EditDailyItemBottomSheet;
@@ -30,7 +28,6 @@ import com.bignat.toutdoux.day_view.day_sections.timed_section.TimedItem;
 import com.bignat.toutdoux.day_view.day_sections.timed_section.TimedItemDao;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -40,7 +37,6 @@ import java.util.List;
 public class DayViewFragment extends Fragment {
     private RecyclerView recyclerView;
     private DayViewAdapter adapter;
-    private List<DayRow> rows;
     private List<DailyItem> dailyItems;
     private List<TimedItem> timedItems;
     private DailyItemDao dailyItemDao;
@@ -52,10 +48,6 @@ public class DayViewFragment extends Fragment {
 
     public DayViewAdapter getAdapter() {
         return adapter;
-    }
-
-    public List<DayRow> getRows() {
-        return rows;
     }
 
     public List<DailyItem> getDailyItems() {
@@ -89,16 +81,11 @@ public class DayViewFragment extends Fragment {
 
         // Read database
         AppDatabase db = AppDatabase.getDatabase(requireContext());
-        rows = new ArrayList<>();
-        rows.add(new DaySectionTitle("Daily"));
         dailyItemDao = db.dailyItemDao();
         dailyItems = dailyItemDao.getAll();
-        rows.addAll(dailyItems);
-        rows.add(new DaySectionTitle("To do"));
         timedItemDao = db.timedItemDao();
         timedItems = timedItemDao.getAll();
-        rows.addAll(timedItems);
-        adapter = new DayViewAdapter(rows);
+        adapter = new DayViewAdapter(dailyItems, timedItems);
 
         // RecyclerView
         recyclerView = view.findViewById(R.id.recyclerView);
@@ -188,29 +175,27 @@ public class DayViewFragment extends Fragment {
                 if (selectedItemType.equals("Daily")) {
                     // Add to list
                     DailyItem newItem = new DailyItem(title);
-                    newItem.setOrderIndex(rows.size());
+                    newItem.setOrderIndex(dailyItems.size());
 
                     long newId = dailyItemDao.insert(newItem);
                     newItem.id = (int) newId;
 
                     dailyItems.add(newItem);
-                    rows.add(newItem);
-                    adapter.notifyItemInserted(rows.size() - 1);
-                    recyclerView.scrollToPosition(rows.size() - 1);
+                    adapter.notifyItemInserted(dailyItems.size());
+                    recyclerView.scrollToPosition(dailyItems.size());
 
                     dialog.dismiss();
                 } else if (selectedItemType.equals("Timed")) {
                     // Add to list
                     TimedItem newItem = new TimedItem(title, new Date());
-                    newItem.setOrderIndex(rows.size());
+                    newItem.setOrderIndex(timedItems.size());
 
                     long newId = timedItemDao.insert(newItem);
                     newItem.id = (int) newId;
 
                     timedItems.add(newItem);
-                    rows.add(newItem);
-                    adapter.notifyItemInserted(rows.size() - 1);
-                    recyclerView.scrollToPosition(rows.size() - 1);
+                    adapter.notifyItemInserted(dailyItems.size() + 1 + timedItems.size());
+                    recyclerView.scrollToPosition(dailyItems.size() + 1 + timedItems.size());
 
                     dialog.dismiss();
                 }

@@ -3,12 +3,10 @@ package com.bignat.toutdoux.day_view.day_sections.timed_section;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-import com.bignat.toutdoux.day_view.day_sections.DayRow;
-
 import java.util.Date;
 
 @Entity
-public class TimedItem implements DayRow {
+public class TimedItem {
     @PrimaryKey(autoGenerate = true)
     public int id;
     public String title;

@@ -1,6 +1,6 @@
 package com.bignat.toutdoux.day_view.day_sections;
 
-public class DaySectionTitle implements DayRow {
+public class DaySectionTitle {
     private String sectionTitle;
 
     public DaySectionTitle(String title) {

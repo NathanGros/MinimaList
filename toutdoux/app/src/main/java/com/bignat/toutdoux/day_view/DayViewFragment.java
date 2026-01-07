@@ -88,17 +88,33 @@ public class DayViewFragment extends Fragment {
                 false
         );
 
+        // Date
         viewDate = Calendar.getInstance();
 
-        viewDateStart = Calendar.getInstance();
-        viewDateStart.setTime(viewDate.getTime());
-        viewDateStart.set(Calendar.HOUR_OF_DAY, 0);
-        viewDateStart.set(Calendar.MINUTE, 0);
-        viewDateStart.set(Calendar.SECOND, 0);
-        viewDateStart.set(Calendar.MILLISECOND, 0);
-        viewDateEnd = Calendar.getInstance();
-        viewDateEnd.setTime(viewDateStart.getTime());
-        viewDateEnd.add(Calendar.DAY_OF_MONTH, 1);
+        refreshDate();
+
+        TextView dateTitle = view.findViewById(R.id.viewDate);
+        dateTitle.setText(DateFormat.getDateInstance(DateFormat.MEDIUM).format(viewDate.getTime()));
+        dateTitle.setOnClickListener(v -> {
+            Calendar cal = Calendar.getInstance();
+            DatePickerDialog datePicker = new DatePickerDialog(
+                    requireContext(),
+                    (datePickerView, year, month, dayOfMonth) -> {
+                        viewDate.set(Calendar.YEAR, year);
+                        viewDate.set(Calendar.MONTH, month);
+                        viewDate.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+
+                        dateTitle.setText(DateFormat.getDateInstance(DateFormat.MEDIUM).format(viewDate.getTime()));
+
+                        refreshDate();
+                        refreshTimedItems();
+                    },
+                    cal.get(Calendar.YEAR),
+                    cal.get(Calendar.MONTH),
+                    cal.get(Calendar.DAY_OF_MONTH)
+            );
+            datePicker.show();
+        });
 
         // Read database
         AppDatabase db = AppDatabase.getDatabase(requireContext());
@@ -173,10 +189,10 @@ public class DayViewFragment extends Fragment {
         dialog.setView(dialogView);
 
         Calendar selectedDateTime = Calendar.getInstance();
-        Date now = selectedDateTime.getTime();
-        dateInput.setText(DateFormat.getDateInstance(DateFormat.MEDIUM).format(now));
+        selectedDateTime.setTime(viewDate.getTime());
+        dateInput.setText(DateFormat.getDateInstance(DateFormat.MEDIUM).format(viewDate.getTime()));
         DateFormat timeFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
-        timeInput.setText(timeFormat.format(now));
+        timeInput.setText(timeFormat.format(viewDate.getTime()));
 
         // Dropdown menu
         dropdown.setOnItemClickListener((parent, view, position, id) -> {
@@ -197,8 +213,6 @@ public class DayViewFragment extends Fragment {
         });
 
         dateInput.setOnClickListener(v -> {
-            Calendar cal = Calendar.getInstance();
-
             DatePickerDialog datePicker = new DatePickerDialog(
                     requireContext(),
                     (view, year, month, dayOfMonth) -> {
@@ -209,17 +223,14 @@ public class DayViewFragment extends Fragment {
                         Date date = selectedDateTime.getTime();
                         dateInput.setText(DateFormat.getDateInstance(DateFormat.MEDIUM).format(date));
                     },
-                    cal.get(Calendar.YEAR),
-                    cal.get(Calendar.MONTH),
-                    cal.get(Calendar.DAY_OF_MONTH)
+                    viewDate.get(Calendar.YEAR),
+                    viewDate.get(Calendar.MONTH),
+                    viewDate.get(Calendar.DAY_OF_MONTH)
             );
-
             datePicker.show();
         });
 
         timeInput.setOnClickListener(v -> {
-            Calendar cal = Calendar.getInstance();
-
             TimePickerDialog timePicker = new TimePickerDialog(
                     requireContext(),
                     (view, hourOfDay, minute) -> {
@@ -230,11 +241,10 @@ public class DayViewFragment extends Fragment {
                         String time = String.format("%02d:%02d", hourOfDay, minute);
                         timeInput.setText(time);
                     },
-                    cal.get(Calendar.HOUR_OF_DAY),
-                    cal.get(Calendar.MINUTE),
+                    viewDate.get(Calendar.HOUR_OF_DAY),
+                    viewDate.get(Calendar.MINUTE),
                     true
             );
-
             timePicker.show();
         });
 
@@ -300,6 +310,18 @@ public class DayViewFragment extends Fragment {
     private void openTimedItemSettings(TimedItem timedItem) {
         EditTimedItemBottomSheet sheet = new EditTimedItemBottomSheet(timedItem, this);
         sheet.show(getParentFragmentManager(), "edit_timed");
+    }
+
+    public void refreshDate() {
+        viewDateStart = Calendar.getInstance();
+        viewDateStart.setTime(viewDate.getTime());
+        viewDateStart.set(Calendar.HOUR_OF_DAY, 0);
+        viewDateStart.set(Calendar.MINUTE, 0);
+        viewDateStart.set(Calendar.SECOND, 0);
+        viewDateStart.set(Calendar.MILLISECOND, 0);
+        viewDateEnd = Calendar.getInstance();
+        viewDateEnd.setTime(viewDateStart.getTime());
+        viewDateEnd.add(Calendar.DAY_OF_MONTH, 1);
     }
 
     public void refreshTimedItems() {

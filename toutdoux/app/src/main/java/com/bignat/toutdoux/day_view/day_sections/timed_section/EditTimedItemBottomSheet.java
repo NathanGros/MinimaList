@@ -80,8 +80,6 @@ public class EditTimedItemBottomSheet extends BottomSheetDialogFragment {
         optionalCheck.setChecked(timedItem.isOptional());
 
         dateInput.setOnClickListener(v -> {
-            Calendar cal = Calendar.getInstance();
-
             DatePickerDialog datePicker = new DatePickerDialog(
                     requireContext(),
                     (dateView, year, month, dayOfMonth) -> {
@@ -92,17 +90,14 @@ public class EditTimedItemBottomSheet extends BottomSheetDialogFragment {
                         Date newDate = selectedDateTime.getTime();
                         dateInput.setText(DateFormat.getDateInstance(DateFormat.MEDIUM).format(newDate));
                     },
-                    cal.get(Calendar.YEAR),
-                    cal.get(Calendar.MONTH),
-                    cal.get(Calendar.DAY_OF_MONTH)
+                    selectedDateTime.get(Calendar.YEAR),
+                    selectedDateTime.get(Calendar.MONTH),
+                    selectedDateTime.get(Calendar.DAY_OF_MONTH)
             );
-
             datePicker.show();
         });
 
         timeInput.setOnClickListener(v -> {
-            Calendar cal = Calendar.getInstance();
-
             TimePickerDialog timePicker = new TimePickerDialog(
                     requireContext(),
                     (timeView, hourOfDay, minute) -> {
@@ -113,11 +108,10 @@ public class EditTimedItemBottomSheet extends BottomSheetDialogFragment {
                         String time = String.format("%02d:%02d", hourOfDay, minute);
                         timeInput.setText(time);
                     },
-                    cal.get(Calendar.HOUR_OF_DAY),
-                    cal.get(Calendar.MINUTE),
+                    selectedDateTime.get(Calendar.HOUR_OF_DAY),
+                    selectedDateTime.get(Calendar.MINUTE),
                     true
             );
-
             timePicker.show();
         });
 

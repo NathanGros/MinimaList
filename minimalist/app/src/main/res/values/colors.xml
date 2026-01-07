@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="primary">#FF000000</color>
+    <color name="primary_dark">#FF000000</color>
+    <color name="accent">#FF000000</color>
+    <color name="app_background">#FFF5F5F5</color>
+    <color name="app_background_menu">#FFE5E5E5</color>
+    <color name="item_background">#FFF5F5F5</color>
+    <color name="item_drag_background">#FFE5E5E5</color>
+    <color name="text_normal">#FF000000</color>
+    <color name="text_title">#FF000000</color>
+    <color name="text_bad">#FFFF0000</color>
+    <color name="text_unselected">#FF808080</color>
+    <color name="ripple_color">#FFD5D5D5</color>
+    <color name="checkbox">#FF000000</color>
+    <color name="icon">#FF000000</color>
+    <color name="fab_off_background">#FFDFDFDF</color>
+    <color name="fab_off_foreground">@color/text_normal</color>
+    <color name="fab_on_background">@color/text_normal</color>
+    <color name="fab_on_foreground">@color/app_background</color>
+</resources>

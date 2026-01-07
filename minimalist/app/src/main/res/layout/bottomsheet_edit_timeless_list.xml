@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="24dp"
+    android:background="@drawable/bottomsheet_bg" >
+
+    <EditText
+        android:id="@+id/titleEdit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:textColor="@color/text_normal"
+        android:textSize="22sp"/>
+
+    <Button
+        android:id="@+id/deleteButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:text="Delete"
+        android:textColor="@color/text_bad"
+        android:textSize="18sp"
+        app:rippleColor="@color/ripple_color" />
+
+    <Button
+        android:id="@+id/cancelButton"
+        android:text="Cancel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:textColor="@color/text_normal"
+        android:textSize="18sp"
+        app:rippleColor="@color/ripple_color" />
+
+    <Button
+        android:id="@+id/saveButton"
+        android:text="Save"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:textColor="@color/text_normal"
+        android:textSize="18sp"
+        app:rippleColor="@color/ripple_color" />
+
+</LinearLayout>

@@ -1,0 +1,24 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <style name="Base.Theme.MinimaList" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:statusBarColor">@color/app_background</item>
+        <item name="colorControlHighlight">@color/ripple_color</item>
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryDark">@color/primary_dark</item>
+        <item name="colorAccent">@color/accent</item>
+    </style>
+    <style name="NoTintCheckBox" parent="Widget.AppCompat.CompoundButton.CheckBox">
+        <item name="buttonTint">@null</item>
+        <item name="android:buttonTint">@null</item>
+    </style>
+    <style name="AppBottomNavigation"
+        parent="Widget.Material3.BottomNavigationView">
+        <item name="android:background">@color/app_background_menu</item>
+        <item name="itemTextColor">@color/bottom_nav_text</item>
+        <item name="itemIconTint">@color/bottom_nav_icon</item>
+        <item name="itemRippleColor">@color/ripple_color</item>
+        <item name="labelVisibilityMode">labeled</item>
+        <item name="itemActiveIndicatorStyle">@null</item>
+    </style>
+    <style name="Theme.MinimaList" parent="Base.Theme.MinimaList" />
+</resources>

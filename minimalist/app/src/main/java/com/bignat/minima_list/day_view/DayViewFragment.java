@@ -352,7 +352,7 @@ public class DayViewFragment extends Fragment {
         addItemButton.setVisibility(adapter.isEditMode() ? View.VISIBLE : View.GONE);
 
         editModeButton.setImageResource(
-                adapter.isEditMode() ? R.drawable.outline_edit_off_24 : R.drawable.outline_edit_24
+                adapter.isEditMode() ? R.drawable.ic_edit_off : R.drawable.ic_edit
         );
         editModeButton.setBackgroundTintList(
                 ColorStateList.valueOf(

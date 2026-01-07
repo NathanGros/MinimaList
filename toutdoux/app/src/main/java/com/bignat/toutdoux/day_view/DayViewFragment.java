@@ -42,6 +42,9 @@ import java.util.Locale;
  */
 public class DayViewFragment extends Fragment {
     private RecyclerView recyclerView;
+    private Calendar viewDate;
+    private Calendar viewDateStart;
+    private Calendar viewDateEnd;
     private DayViewAdapter adapter;
     private List<DailyItem> dailyItems;
     private List<TimedItem> timedItems;
@@ -85,12 +88,24 @@ public class DayViewFragment extends Fragment {
                 false
         );
 
+        viewDate = Calendar.getInstance();
+
+        viewDateStart = Calendar.getInstance();
+        viewDateStart.setTime(viewDate.getTime());
+        viewDateStart.set(Calendar.HOUR_OF_DAY, 0);
+        viewDateStart.set(Calendar.MINUTE, 0);
+        viewDateStart.set(Calendar.SECOND, 0);
+        viewDateStart.set(Calendar.MILLISECOND, 0);
+        viewDateEnd = Calendar.getInstance();
+        viewDateEnd.setTime(viewDateStart.getTime());
+        viewDateEnd.add(Calendar.DAY_OF_MONTH, 1);
+
         // Read database
         AppDatabase db = AppDatabase.getDatabase(requireContext());
         dailyItemDao = db.dailyItemDao();
         dailyItems = dailyItemDao.getAll();
         timedItemDao = db.timedItemDao();
-        timedItems = timedItemDao.getAll();
+        timedItems = timedItemDao.getAllByDate(viewDateStart.getTime(), viewDateEnd.getTime());
         adapter = new DayViewAdapter(dailyItems, timedItems);
 
         // RecyclerView
@@ -249,11 +264,10 @@ public class DayViewFragment extends Fragment {
                     long newId = timedItemDao.insert(newItem);
                     newItem.id = (int) newId;
 
-                    timedItems.clear();
-                    timedItems.addAll(timedItemDao.getAll());
-                    adapter.notifyDataSetChanged();
+                    refreshTimedItems();
                     int index = timedItems.indexOf(newItem);
-                    recyclerView.scrollToPosition(1 + dailyItems.size() + index);
+                    if (index != -1)
+                        recyclerView.scrollToPosition(1 + dailyItems.size() + index);
 
                     dialog.dismiss();
                 }
@@ -287,6 +301,13 @@ public class DayViewFragment extends Fragment {
         EditTimedItemBottomSheet sheet = new EditTimedItemBottomSheet(timedItem, this);
         sheet.show(getParentFragmentManager(), "edit_timed");
     }
+
+    public void refreshTimedItems() {
+        timedItems.clear();
+        timedItems.addAll(timedItemDao.getAllByDate(viewDateStart.getTime(), viewDateEnd.getTime()));
+        adapter.notifyDataSetChanged();
+    }
+
     private void setEditMode(boolean newEditMode) {
         adapter.setEditMode(newEditMode);
 

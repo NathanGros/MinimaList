@@ -127,9 +127,7 @@ public class EditTimedItemBottomSheet extends BottomSheetDialogFragment {
             timedItem.setCompleted(completedCheck.isChecked());
             timedItem.setOptional(optionalCheck.isChecked());
             parentFragment.getTimedItemDao().update(timedItem);
-            parentFragment.getTimedItems().clear();
-            parentFragment.getTimedItems().addAll(parentFragment.getTimedItemDao().getAll());
-            parentFragment.getAdapter().notifyDataSetChanged();
+            parentFragment.refreshTimedItems();
             dismiss();
         });
 

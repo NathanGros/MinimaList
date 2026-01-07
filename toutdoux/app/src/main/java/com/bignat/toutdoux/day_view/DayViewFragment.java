@@ -11,6 +11,7 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
@@ -114,6 +115,22 @@ public class DayViewFragment extends Fragment {
                     cal.get(Calendar.DAY_OF_MONTH)
             );
             datePicker.show();
+        });
+
+        // Date arrows
+        ImageButton datePreviousButton = view.findViewById(R.id.datePreviousButton);
+        ImageButton dateNextButton = view.findViewById(R.id.dateNextButton);
+        datePreviousButton.setOnClickListener(v -> {
+            viewDate.add(Calendar.DAY_OF_MONTH, -1);
+            refreshDate();
+            dateTitle.setText(DateFormat.getDateInstance(DateFormat.MEDIUM).format(viewDate.getTime()));
+            refreshTimedItems();
+        });
+        dateNextButton.setOnClickListener(v -> {
+            viewDate.add(Calendar.DAY_OF_MONTH, 1);
+            refreshDate();
+            dateTitle.setText(DateFormat.getDateInstance(DateFormat.MEDIUM).format(viewDate.getTime()));
+            refreshTimedItems();
         });
 
         // Read database

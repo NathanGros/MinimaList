@@ -17,17 +17,15 @@ import com.bignat.toutdoux.R;
 import com.bignat.toutdoux.day_view.DayViewFragment;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
-import java.util.List;
-
 public class EditDailyItemBottomSheet extends BottomSheetDialogFragment {
-    private int itemPosition;
+    private DailyItem dailyItem;
     private DayViewFragment parentFragment;
 
     public EditDailyItemBottomSheet(
-            int itemPosition,
+            DailyItem dailyItem,
             DayViewFragment context
     ) {
-        this.itemPosition = itemPosition;
+        this.dailyItem = dailyItem;
         this.parentFragment = context;
     }
 
@@ -64,26 +62,22 @@ public class EditDailyItemBottomSheet extends BottomSheetDialogFragment {
             dismiss();
         });
 
-        List<DailyItem> dailyItems = parentFragment.getDailyItems();
-        if (itemPosition < 1 || itemPosition > dailyItems.size())
-            return;
-        DailyItem item = dailyItems.get(itemPosition - 1);
-
-        titleEdit.setText(item.getTitle());
-        completedCheck.setChecked(item.isCompleted());
-        optionalCheck.setChecked(item.isOptional());
+        titleEdit.setText(dailyItem.getTitle());
+        completedCheck.setChecked(dailyItem.isCompleted());
+        optionalCheck.setChecked(dailyItem.isOptional());
 
         saveButton.setOnClickListener(v -> {
-            item.setTitle(titleEdit.getText().toString().trim());
-            item.setCompleted(completedCheck.isChecked());
-            item.setOptional(optionalCheck.isChecked());
-            parentFragment.getDailyItemDao().update(item);
-            parentFragment.getAdapter().notifyItemChanged(itemPosition + 1);
+            dailyItem.setTitle(titleEdit.getText().toString().trim());
+            dailyItem.setCompleted(completedCheck.isChecked());
+            dailyItem.setOptional(optionalCheck.isChecked());
+            parentFragment.getDailyItemDao().update(dailyItem);
+            int index = parentFragment.getDailyItems().indexOf(dailyItem);
+            parentFragment.getAdapter().notifyItemChanged(index + 1);
             dismiss();
         });
 
         deleteButton.setOnClickListener(v -> {
-            showDeleteConfirmation(item);
+            showDeleteConfirmation(dailyItem);
         });
     }
 

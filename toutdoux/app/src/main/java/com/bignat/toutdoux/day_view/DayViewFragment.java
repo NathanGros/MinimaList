@@ -217,16 +217,16 @@ public class DayViewFragment extends Fragment {
     /**
      * Opens the daily item settings bottomSheet
      */
-    private void openDailyItemSettings(int position) {
-        EditDailyItemBottomSheet sheet = new EditDailyItemBottomSheet(position, this);
+    private void openDailyItemSettings(DailyItem dailyItem) {
+        EditDailyItemBottomSheet sheet = new EditDailyItemBottomSheet(dailyItem, this);
         sheet.show(getParentFragmentManager(), "edit_daily");
     }
 
     /**
      * Opens the timed item settings bottomSheet
      */
-    private void openTimedItemSettings(int position) {
-        EditTimedItemBottomSheet sheet = new EditTimedItemBottomSheet(position, this);
+    private void openTimedItemSettings(TimedItem timedItem) {
+        EditTimedItemBottomSheet sheet = new EditTimedItemBottomSheet(timedItem, this);
         sheet.show(getParentFragmentManager(), "edit_timed");
     }
     private void setEditMode(boolean newEditMode) {

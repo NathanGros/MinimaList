@@ -52,7 +52,7 @@ public class DayViewAdapter extends RecyclerView.Adapter<DayViewAdapter.DayRowVi
     }
 
     public interface OnDailyItemSettingsClickListener {
-        void onDailyItemSettingsClick(int position);
+        void onDailyItemSettingsClick(DailyItem dailyItem);
     }
 
     public void setOnDailyItemSettingsClickListener(OnDailyItemSettingsClickListener dailyItemSettingsClickListener) {
@@ -60,7 +60,7 @@ public class DayViewAdapter extends RecyclerView.Adapter<DayViewAdapter.DayRowVi
     }
 
     public interface OnTimedItemSettingsClickListener {
-        void onTimedItemSettingsClick(int position);
+        void onTimedItemSettingsClick(TimedItem timedItem);
     }
 
     public void setOnTimedItemSettingsClickListener(OnTimedItemSettingsClickListener timedItemSettingsClickListener) {
@@ -81,12 +81,12 @@ public class DayViewAdapter extends RecyclerView.Adapter<DayViewAdapter.DayRowVi
             bindViewSectionTitle(holder, dailySectionTitle);
         } else if (position < 1 + dailyItems.size()) {
             DailyItem item = dailyItems.get(position - 1);
-            bindViewDailyItem(holder, item, position);
+            bindViewDailyItem(holder, item);
         } else if (position == 1 + dailyItems.size()) {
             bindViewSectionTitle(holder, timedSectionTitle);
         } else {
             TimedItem item = timedItems.get(position - 1 - dailyItems.size() - 1);
-            bindViewTimedItem(holder, item, position);
+            bindViewTimedItem(holder, item);
         }
     }
 
@@ -101,7 +101,7 @@ public class DayViewAdapter extends RecyclerView.Adapter<DayViewAdapter.DayRowVi
         holder.checkBox.setVisibility(View.GONE);
     }
 
-    private void bindViewDailyItem(DayRowViewHolder holder, DailyItem dailyItem, int position) {
+    private void bindViewDailyItem(DayRowViewHolder holder, DailyItem dailyItem) {
         holder.title.setText(dailyItem.getTitle());
         holder.title.setTextSize(18f);
         holder.title.setGravity(Gravity.CENTER_VERTICAL);
@@ -140,11 +140,11 @@ public class DayViewAdapter extends RecyclerView.Adapter<DayViewAdapter.DayRowVi
 //        });
 
         holder.settingsButton.setOnClickListener(v -> {
-            dailyItemSettingsClickListener.onDailyItemSettingsClick(position);
+            dailyItemSettingsClickListener.onDailyItemSettingsClick(dailyItem);
         });
     }
 
-    private void bindViewTimedItem(DayRowViewHolder holder, TimedItem timedItem, int position) {
+    private void bindViewTimedItem(DayRowViewHolder holder, TimedItem timedItem) {
         holder.title.setText(timedItem.getTitle());
         holder.title.setTextSize(18f);
         holder.title.setGravity(Gravity.CENTER_VERTICAL);
@@ -183,7 +183,7 @@ public class DayViewAdapter extends RecyclerView.Adapter<DayViewAdapter.DayRowVi
 //        });
 
         holder.settingsButton.setOnClickListener(v -> {
-            timedItemSettingsClickListener.onTimedItemSettingsClick(position);
+            timedItemSettingsClickListener.onTimedItemSettingsClick(timedItem);
         });
     }
 

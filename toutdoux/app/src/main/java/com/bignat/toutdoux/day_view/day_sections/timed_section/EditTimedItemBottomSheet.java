@@ -15,20 +15,17 @@ import androidx.appcompat.app.AlertDialog;
 
 import com.bignat.toutdoux.R;
 import com.bignat.toutdoux.day_view.DayViewFragment;
-import com.bignat.toutdoux.day_view.day_sections.daily_section.DailyItem;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
-import java.util.List;
-
 public class EditTimedItemBottomSheet extends BottomSheetDialogFragment {
-    private int itemPosition;
+    private TimedItem timedItem;
     private DayViewFragment parentFragment;
 
     public EditTimedItemBottomSheet(
-            int itemPosition,
+            TimedItem timedItem,
             DayViewFragment context
     ) {
-        this.itemPosition = itemPosition;
+        this.timedItem = timedItem;
         this.parentFragment = context;
     }
 
@@ -65,27 +62,22 @@ public class EditTimedItemBottomSheet extends BottomSheetDialogFragment {
             dismiss();
         });
 
-        List<DailyItem> dailyItems = parentFragment.getDailyItems();
-        List<TimedItem> timedItems = parentFragment.getTimedItems();
-        if (itemPosition < 1 + dailyItems.size() + 1 || itemPosition > dailyItems.size() + 1 + timedItems.size())
-            return;
-        TimedItem item = timedItems.get(itemPosition - 1 - dailyItems.size() - 1);
-
-        titleEdit.setText(item.getTitle());
-        completedCheck.setChecked(item.isCompleted());
-        optionalCheck.setChecked(item.isOptional());
+        titleEdit.setText(timedItem.getTitle());
+        completedCheck.setChecked(timedItem.isCompleted());
+        optionalCheck.setChecked(timedItem.isOptional());
 
         saveButton.setOnClickListener(v -> {
-            item.setTitle(titleEdit.getText().toString().trim());
-            item.setCompleted(completedCheck.isChecked());
-            item.setOptional(optionalCheck.isChecked());
-            parentFragment.getTimedItemDao().update(item);
-            parentFragment.getAdapter().notifyItemChanged(itemPosition + 1 + parentFragment.getDailyItems().size() + 1);
+            timedItem.setTitle(titleEdit.getText().toString().trim());
+            timedItem.setCompleted(completedCheck.isChecked());
+            timedItem.setOptional(optionalCheck.isChecked());
+            parentFragment.getTimedItemDao().update(timedItem);
+            int index = parentFragment.getTimedItems().indexOf(timedItem);
+            parentFragment.getAdapter().notifyItemChanged(index + 1 + parentFragment.getDailyItems().size() + 1);
             dismiss();
         });
 
         deleteButton.setOnClickListener(v -> {
-            showDeleteConfirmation(item);
+            showDeleteConfirmation(timedItem);
         });
     }
 

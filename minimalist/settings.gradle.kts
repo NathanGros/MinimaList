@@ -19,5 +19,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Tout Doux"
+rootProject.name = "MinimaList"
 include(":app")

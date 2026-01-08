@@ -9,6 +9,8 @@ import android.content.Context;
 
 import com.bignat.minima_list.day_view.day_sections.daily_section.DailyItem;
 import com.bignat.minima_list.day_view.day_sections.daily_section.DailyItemDao;
+import com.bignat.minima_list.day_view.day_sections.event_section.EventItem;
+import com.bignat.minima_list.day_view.day_sections.event_section.EventItemDao;
 import com.bignat.minima_list.day_view.day_sections.timed_section.DateConverter;
 import com.bignat.minima_list.day_view.day_sections.timed_section.TimedItem;
 import com.bignat.minima_list.day_view.day_sections.timed_section.TimedItemDao;
@@ -17,13 +19,14 @@ import com.bignat.minima_list.timeless_lists.timeless_list.TimelessList;
 import com.bignat.minima_list.timeless_lists.timeless_list.TimelessListDao;
 import com.bignat.minima_list.timeless_lists.timeless_list.timeless_item.TimelessItem;
 
-@Database(entities = {TimelessItem.class, TimelessList.class, DailyItem.class, TimedItem.class}, version = 6)
+@Database(entities = {TimelessItem.class, TimelessList.class, DailyItem.class, TimedItem.class, EventItem.class}, version = 7)
 @TypeConverters({DateConverter.class})
 public abstract class AppDatabase extends RoomDatabase {
     public abstract TimelessListDao timelessListDao();
     public abstract TimelessListsDao timelessListsDao();
     public abstract DailyItemDao dailyItemDao();
     public abstract TimedItemDao timedItemDao();
+    public abstract EventItemDao eventItemDao();
 
     private static AppDatabase INSTANCE;
 

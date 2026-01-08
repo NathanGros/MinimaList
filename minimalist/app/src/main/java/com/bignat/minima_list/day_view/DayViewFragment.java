@@ -142,7 +142,7 @@ public class DayViewFragment extends Fragment {
         dailyItemDao = db.dailyItemDao();
         dailyItems = dailyItemDao.getAll();
         timedItemDao = db.timedItemDao();
-        timedItems = timedItemDao.getAllByDate(viewDateStart.getTime(), viewDateEnd.getTime());
+        timedItems = timedItemDao.getAllByDay(viewDateStart.getTime(), viewDateEnd.getTime());
         postponedItems = timedItemDao.getAllPostponed(viewDateStart.getTime());
         adapter = new DayViewAdapter(dailyItems, timedItems, postponedItems);
 
@@ -366,7 +366,7 @@ public class DayViewFragment extends Fragment {
 
     public void refreshTimedItems() {
         timedItems.clear();
-        timedItems.addAll(timedItemDao.getAllByDate(viewDateStart.getTime(), viewDateEnd.getTime()));
+        timedItems.addAll(timedItemDao.getAllByDay(viewDateStart.getTime(), viewDateEnd.getTime()));
         postponedItems.clear();
         postponedItems.addAll(timedItemDao.getAllPostponed(viewDateStart.getTime()));
         adapter.notifyDataSetChanged();

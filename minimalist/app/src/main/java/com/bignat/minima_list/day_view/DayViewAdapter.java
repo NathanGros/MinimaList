@@ -229,6 +229,12 @@ public class DayViewAdapter extends RecyclerView.Adapter<DayViewAdapter.DayRowVi
         holder.title.setTextSize(18f);
         holder.title.setTextColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.text_normal));
         holder.title.setGravity(Gravity.CENTER_VERTICAL);
+        Calendar now = Calendar.getInstance();
+        if (eventItem.getEndDate().compareTo(now.getTime()) < 0) {
+            holder.title.setAlpha(0.5f);
+        } else {
+            holder.title.setAlpha(1f);
+        }
 
         if (eventItem.isOptional()) {
             holder.title.setTypeface(null, Typeface.ITALIC);

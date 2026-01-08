@@ -225,16 +225,24 @@ public class DayViewFragment extends Fragment {
         TextView dialogTitle = dialogView.findViewById(R.id.dialogTitle);
         AutoCompleteTextView dropdown = dialogView.findViewById(R.id.itemTypeDropdown);
         EditText input = dialogView.findViewById(R.id.itemTitleBox);
+        // Daily item
         View layoutDaily = dialogView.findViewById(R.id.layoutDaily);
+        // Timed item
         View layoutTimed = dialogView.findViewById(R.id.layoutTimed);
-        EditText dateInput = dialogView.findViewById(R.id.deadlineDate);
-        EditText timeInput = dialogView.findViewById(R.id.deadlineTime);
+        EditText deadlineDateInput = dialogView.findViewById(R.id.deadlineDate);
+        EditText deadlineTimeInput = dialogView.findViewById(R.id.deadlineTime);
+        // Event item
+        View layoutEvent = dialogView.findViewById(R.id.layoutEvent);
+        EditText eventStartDateInput = dialogView.findViewById(R.id.eventStartDate);
+        EditText eventStartTimeInput = dialogView.findViewById(R.id.eventStartTime);
+        EditText eventEndDateInput = dialogView.findViewById(R.id.eventEndDate);
+        EditText eventEndTimeInput = dialogView.findViewById(R.id.eventEndTime);
         Button positiveButton = dialogView.findViewById(R.id.buttonPositive);
         Button negativeButton = dialogView.findViewById(R.id.buttonNegative);
 
         // Set values
         dialogTitle.setText("Add new item");
-        String[] itemTypes = {"Daily", "Timed"};
+        String[] itemTypes = {"Daily", "Timed", "Event"};
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(
                 requireContext(),
                 android.R.layout.simple_list_item_1,
@@ -243,17 +251,28 @@ public class DayViewFragment extends Fragment {
         dropdown.setAdapter(arrayAdapter);
         dropdown.setText(itemTypes[0], false);
         input.setHint("Item name");
-        layoutDaily.setVisibility(View.GONE);
+        layoutDaily.setVisibility(View.VISIBLE);
         layoutTimed.setVisibility(View.GONE);
+        layoutEvent.setVisibility(View.GONE);
         positiveButton.setText("Add");
         negativeButton.setText("Cancel");
         dialog.setView(dialogView);
-
-        Calendar selectedDateTime = Calendar.getInstance();
-        selectedDateTime.setTime(viewDate.getTime());
-        dateInput.setText(DateFormat.getDateInstance(DateFormat.MEDIUM).format(viewDate.getTime()));
+        // Set date input values
+        Calendar selectedDeadlineDateTime = Calendar.getInstance();
+        Calendar selectedEventStartDateTime = Calendar.getInstance();
+        Calendar selectedEventEndDateTime = Calendar.getInstance();
+        selectedDeadlineDateTime.setTime(viewDate.getTime());
+        selectedEventStartDateTime.setTime(viewDate.getTime());
+        selectedEventEndDateTime.setTime(viewDate.getTime());
+        selectedEventEndDateTime.add(Calendar.HOUR_OF_DAY, 1);
+        DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.MEDIUM);
         DateFormat timeFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
-        timeInput.setText(timeFormat.format(viewDate.getTime()));
+        deadlineDateInput.setText(dateFormat.format(selectedDeadlineDateTime.getTime()));
+        deadlineTimeInput.setText(timeFormat.format(selectedDeadlineDateTime.getTime()));
+        eventStartDateInput.setText(dateFormat.format(selectedEventStartDateTime.getTime()));
+        eventStartTimeInput.setText(timeFormat.format(selectedEventStartDateTime.getTime()));
+        eventEndDateInput.setText(dateFormat.format(selectedEventEndDateTime.getTime()));
+        eventEndTimeInput.setText(timeFormat.format(selectedEventEndDateTime.getTime()));
 
         // Dropdown menu
         dropdown.setOnItemClickListener((parent, view, position, id) -> {
@@ -261,49 +280,125 @@ public class DayViewFragment extends Fragment {
                 case 0: // Daily
                     layoutDaily.setVisibility(View.VISIBLE);
                     layoutTimed.setVisibility(View.GONE);
+                    layoutEvent.setVisibility(View.GONE);
                     break;
                 case 1: // Timed
                     layoutDaily.setVisibility(View.GONE);
                     layoutTimed.setVisibility(View.VISIBLE);
+                    layoutEvent.setVisibility(View.GONE);
                     break;
-                default:
+                case 2: // Event
                     layoutDaily.setVisibility(View.GONE);
                     layoutTimed.setVisibility(View.GONE);
+                    layoutEvent.setVisibility(View.VISIBLE);
                     break;
             }
         });
 
-        dateInput.setOnClickListener(v -> {
+        // Date inputs click listeners
+        deadlineDateInput.setOnClickListener(v -> {
             DatePickerDialog datePicker = new DatePickerDialog(
                     requireContext(),
                     (view, year, month, dayOfMonth) -> {
-                        selectedDateTime.set(Calendar.YEAR, year);
-                        selectedDateTime.set(Calendar.MONTH, month);
-                        selectedDateTime.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                        selectedDeadlineDateTime.set(Calendar.YEAR, year);
+                        selectedDeadlineDateTime.set(Calendar.MONTH, month);
+                        selectedDeadlineDateTime.set(Calendar.DAY_OF_MONTH, dayOfMonth);
 
-                        Date date = selectedDateTime.getTime();
-                        dateInput.setText(DateFormat.getDateInstance(DateFormat.MEDIUM).format(date));
+                        Date date = selectedDeadlineDateTime.getTime();
+                        deadlineDateInput.setText(DateFormat.getDateInstance(DateFormat.MEDIUM).format(date));
                     },
-                    viewDate.get(Calendar.YEAR),
-                    viewDate.get(Calendar.MONTH),
-                    viewDate.get(Calendar.DAY_OF_MONTH)
+                    selectedDeadlineDateTime.get(Calendar.YEAR),
+                    selectedDeadlineDateTime.get(Calendar.MONTH),
+                    selectedDeadlineDateTime.get(Calendar.DAY_OF_MONTH)
             );
             datePicker.show();
         });
 
-        timeInput.setOnClickListener(v -> {
+        deadlineTimeInput.setOnClickListener(v -> {
             TimePickerDialog timePicker = new TimePickerDialog(
                     requireContext(),
                     (view, hourOfDay, minute) -> {
-                        selectedDateTime.set(Calendar.HOUR_OF_DAY, hourOfDay);
-                        selectedDateTime.set(Calendar.MINUTE, minute);
-                        selectedDateTime.set(Calendar.SECOND, 0);
+                        selectedDeadlineDateTime.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                        selectedDeadlineDateTime.set(Calendar.MINUTE, minute);
+                        selectedDeadlineDateTime.set(Calendar.SECOND, 0);
 
                         String time = String.format("%02d:%02d", hourOfDay, minute);
-                        timeInput.setText(time);
+                        deadlineTimeInput.setText(time);
                     },
-                    viewDate.get(Calendar.HOUR_OF_DAY),
-                    viewDate.get(Calendar.MINUTE),
+                    selectedDeadlineDateTime.get(Calendar.HOUR_OF_DAY),
+                    selectedDeadlineDateTime.get(Calendar.MINUTE),
+                    true
+            );
+            timePicker.show();
+        });
+
+        eventStartDateInput.setOnClickListener(v -> {
+            DatePickerDialog datePicker = new DatePickerDialog(
+                    requireContext(),
+                    (view, year, month, dayOfMonth) -> {
+                        selectedEventStartDateTime.set(Calendar.YEAR, year);
+                        selectedEventStartDateTime.set(Calendar.MONTH, month);
+                        selectedEventStartDateTime.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+
+                        Date date = selectedEventStartDateTime.getTime();
+                        eventStartDateInput.setText(DateFormat.getDateInstance(DateFormat.MEDIUM).format(date));
+                    },
+                    selectedEventStartDateTime.get(Calendar.YEAR),
+                    selectedEventStartDateTime.get(Calendar.MONTH),
+                    selectedEventStartDateTime.get(Calendar.DAY_OF_MONTH)
+            );
+            datePicker.show();
+        });
+
+        eventStartTimeInput.setOnClickListener(v -> {
+            TimePickerDialog timePicker = new TimePickerDialog(
+                    requireContext(),
+                    (view, hourOfDay, minute) -> {
+                        selectedEventStartDateTime.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                        selectedEventStartDateTime.set(Calendar.MINUTE, minute);
+                        selectedEventStartDateTime.set(Calendar.SECOND, 0);
+
+                        String time = String.format("%02d:%02d", hourOfDay, minute);
+                        eventStartTimeInput.setText(time);
+                    },
+                    selectedEventStartDateTime.get(Calendar.HOUR_OF_DAY),
+                    selectedEventStartDateTime.get(Calendar.MINUTE),
+                    true
+            );
+            timePicker.show();
+        });
+
+        eventEndDateInput.setOnClickListener(v -> {
+            DatePickerDialog datePicker = new DatePickerDialog(
+                    requireContext(),
+                    (view, year, month, dayOfMonth) -> {
+                        selectedEventEndDateTime.set(Calendar.YEAR, year);
+                        selectedEventEndDateTime.set(Calendar.MONTH, month);
+                        selectedEventEndDateTime.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+
+                        Date date = selectedEventEndDateTime.getTime();
+                        eventEndDateInput.setText(DateFormat.getDateInstance(DateFormat.MEDIUM).format(date));
+                    },
+                    selectedEventEndDateTime.get(Calendar.YEAR),
+                    selectedEventEndDateTime.get(Calendar.MONTH),
+                    selectedEventEndDateTime.get(Calendar.DAY_OF_MONTH)
+            );
+            datePicker.show();
+        });
+
+        eventEndTimeInput.setOnClickListener(v -> {
+            TimePickerDialog timePicker = new TimePickerDialog(
+                    requireContext(),
+                    (view, hourOfDay, minute) -> {
+                        selectedEventEndDateTime.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                        selectedEventEndDateTime.set(Calendar.MINUTE, minute);
+                        selectedEventEndDateTime.set(Calendar.SECOND, 0);
+
+                        String time = String.format("%02d:%02d", hourOfDay, minute);
+                        eventEndTimeInput.setText(time);
+                    },
+                    selectedEventEndDateTime.get(Calendar.HOUR_OF_DAY),
+                    selectedEventEndDateTime.get(Calendar.MINUTE),
                     true
             );
             timePicker.show();
@@ -312,38 +407,60 @@ public class DayViewFragment extends Fragment {
         // Add button
         positiveButton.setOnClickListener(v -> {
             String title = input.getText().toString().trim();
-            if (!title.isEmpty()) {
-                String selectedItemType = dropdown.getText().toString();
-                if (selectedItemType.equals("Daily")) {
-                    // Add to list
-                    DailyItem newItem = new DailyItem(title);
-                    newItem.setOrderIndex(dailyItems.size());
-
-                    long newId = dailyItemDao.insert(newItem);
-                    newItem.id = (int) newId;
-
-                    dailyItems.add(newItem);
-                    adapter.notifyItemInserted(dailyItems.size());
-                    recyclerView.scrollToPosition(dailyItems.size());
-
-                    dialog.dismiss();
-                } else if (selectedItemType.equals("Timed")) {
-                    // Add to list
-                    Date deadline = selectedDateTime.getTime();
-                    TimedItem newItem = new TimedItem(title, deadline);
-
-                    long newId = timedItemDao.insert(newItem);
-                    newItem.id = (int) newId;
-
-                    refreshTimedItems();
-                    int index = timedItems.indexOf(newItem);
-                    if (index != -1)
-                        recyclerView.scrollToPosition(1 + dailyItems.size() + index);
-
-                    dialog.dismiss();
-                }
-            } else {
+            if (title.isEmpty()) {
                 input.setError("Required");
+            } else {
+                String selectedItemType = dropdown.getText().toString();
+                switch (selectedItemType) {
+                    case "Daily": {
+                        // Add to list
+                        DailyItem newItem = new DailyItem(title);
+                        newItem.setOrderIndex(dailyItems.size());
+
+                        long newId = dailyItemDao.insert(newItem);
+                        newItem.id = (int) newId;
+
+                        dailyItems.add(newItem);
+                        adapter.notifyItemInserted(dailyItems.size());
+                        recyclerView.scrollToPosition(dailyItems.size());
+
+                        dialog.dismiss();
+                        break;
+                    }
+                    case "Timed": {
+                        // Add to list
+                        Date deadline = selectedDeadlineDateTime.getTime();
+                        TimedItem newItem = new TimedItem(title, deadline);
+
+                        long newId = timedItemDao.insert(newItem);
+                        newItem.id = (int) newId;
+
+                        refreshTimedItems();
+                        int index = timedItems.indexOf(newItem);
+                        if (index != -1)
+                            recyclerView.scrollToPosition(1 + dailyItems.size() + index);
+
+                        dialog.dismiss();
+                        break;
+                    }
+                    case "Event": {
+                        // Add to list
+                        Date eventStart = selectedEventStartDateTime.getTime();
+                        Date eventEnd = selectedEventEndDateTime.getTime();
+                        EventItem newItem = new EventItem(title, eventStart, eventEnd);
+
+                        long newId = eventItemDao.insert(newItem);
+                        newItem.id = (int) newId;
+
+                        refreshEventItems();
+                        int index = eventItems.indexOf(newItem);
+                        if (index != -1)
+                            recyclerView.scrollToPosition(1 + dailyItems.size() + 1 + timedItems.size() + postponedItems.size() + index);
+
+                        dialog.dismiss();
+                        break;
+                    }
+                }
             }
         });
 
@@ -403,7 +520,7 @@ public class DayViewFragment extends Fragment {
 
     public void refreshEventItems() {
         eventItems.clear();
-        eventItems = eventItemDao.getAllByDay(viewDateStart.getTime(), viewDateEnd.getTime());
+        eventItems.addAll(eventItemDao.getAllByDay(viewDateStart.getTime(), viewDateEnd.getTime()));
         adapter.notifyDataSetChanged();
     }
 

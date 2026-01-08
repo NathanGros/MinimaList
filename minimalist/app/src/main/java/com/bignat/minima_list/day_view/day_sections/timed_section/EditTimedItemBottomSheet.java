@@ -176,11 +176,19 @@ public class EditTimedItemBottomSheet extends BottomSheetDialogFragment {
         // Delete from database
         parentFragment.getTimedItemDao().delete(item);
 
-        // Delete from list
+        // Delete from Timed list
         int index = parentFragment.getTimedItems().indexOf(item);
         if (index != -1) {
             parentFragment.getTimedItems().remove(index);
             parentFragment.getAdapter().notifyItemRemoved(index + 1 + parentFragment.getDailyItems().size() + 1);
+            return;
+        }
+        // Or delete from Postponed list
+        index = parentFragment.getPostponedItems().indexOf(item);
+        if (index != -1) {
+            parentFragment.getPostponedItems().remove(index);
+            parentFragment.getAdapter().notifyItemRemoved(index + 1 + parentFragment.getDailyItems().size() + 1 + parentFragment.getTimedItems().size());
+            return;
         }
     }
 }

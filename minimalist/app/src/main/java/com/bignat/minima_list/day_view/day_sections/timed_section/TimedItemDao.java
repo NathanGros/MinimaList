@@ -14,9 +14,11 @@ public interface TimedItemDao {
     @Query("SELECT * FROM TimedItem ORDER BY deadline ASC")
     List<TimedItem> getAll();
 
-    @Query("SELECT * FROM TimedItem WHERE deadline >= :start AND deadline < :end ORDER BY deadline ASC")
-    List<TimedItem> getAllByDate(Date start, Date end);
+    @Query("SELECT * FROM TimedItem WHERE deadline >= :dayStart AND deadline < :dayEnd ORDER BY deadline ASC")
+    List<TimedItem> getAllByDate(Date dayStart, Date dayEnd);
 
+    @Query("SELECT * FROM TimedItem WHERE deadline < :dayStart AND NOT completed ORDER BY deadline ASC")
+    List<TimedItem> getAllPostponed(Date dayStart);
 
     @Insert
     long insert(TimedItem timedItem);

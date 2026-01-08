@@ -48,6 +48,7 @@ public class DayViewFragment extends Fragment {
     private DayViewAdapter adapter;
     private List<DailyItem> dailyItems;
     private List<TimedItem> timedItems;
+    private List<TimedItem> postponedItems;
     private DailyItemDao dailyItemDao;
     private TimedItemDao timedItemDao;
     private FloatingActionButton addItemButton;
@@ -65,6 +66,10 @@ public class DayViewFragment extends Fragment {
 
     public List<TimedItem> getTimedItems() {
         return timedItems;
+    }
+
+    public List<TimedItem> getPostponedItems() {
+        return postponedItems;
     }
 
     public DailyItemDao getDailyItemDao() {
@@ -138,7 +143,8 @@ public class DayViewFragment extends Fragment {
         dailyItems = dailyItemDao.getAll();
         timedItemDao = db.timedItemDao();
         timedItems = timedItemDao.getAllByDate(viewDateStart.getTime(), viewDateEnd.getTime());
-        adapter = new DayViewAdapter(dailyItems, timedItems);
+        postponedItems = timedItemDao.getAllPostponed(viewDateStart.getTime());
+        adapter = new DayViewAdapter(dailyItems, timedItems, postponedItems);
 
         // RecyclerView
         recyclerView = view.findViewById(R.id.recyclerView);
@@ -150,6 +156,9 @@ public class DayViewFragment extends Fragment {
 
         // Open timed item settings
         adapter.setOnTimedItemSettingsClickListener(this::openTimedItemSettings);
+
+        // Refresh timed items hook
+        adapter.setRefreshTimedItemsHook(this::refreshTimedItems);
 
         // Add item button
         addItemButton = view.findViewById(R.id.addItemButton);
@@ -343,6 +352,8 @@ public class DayViewFragment extends Fragment {
     public void refreshTimedItems() {
         timedItems.clear();
         timedItems.addAll(timedItemDao.getAllByDate(viewDateStart.getTime(), viewDateEnd.getTime()));
+        postponedItems.clear();
+        postponedItems.addAll(timedItemDao.getAllPostponed(viewDateStart.getTime()));
         adapter.notifyDataSetChanged();
     }
 

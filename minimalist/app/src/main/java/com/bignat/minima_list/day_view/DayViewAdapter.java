@@ -27,18 +27,22 @@ public class DayViewAdapter extends RecyclerView.Adapter<DayViewAdapter.DayRowVi
     DaySectionTitle timedSectionTitle;
     private List<DailyItem> dailyItems;
     private List<TimedItem> timedItems;
+    private List<TimedItem> postponedItems;
     private OnDailyItemSettingsClickListener dailyItemSettingsClickListener;
     private OnTimedItemSettingsClickListener timedItemSettingsClickListener;
+    private RefreshTimedItemsHook refreshTimedItemsHook;
     private boolean isEditMode;
 
     public DayViewAdapter(
             List<DailyItem> dailyItems,
-            List<TimedItem> timedItems
+            List<TimedItem> timedItems,
+            List<TimedItem> postponedItems
     ) {
         dailySectionTitle = new DaySectionTitle("Daily");
         timedSectionTitle = new DaySectionTitle("To do");
         this.dailyItems = dailyItems;
         this.timedItems = timedItems;
+        this.postponedItems = postponedItems;
         this.isEditMode = false;
     }
 
@@ -67,6 +71,14 @@ public class DayViewAdapter extends RecyclerView.Adapter<DayViewAdapter.DayRowVi
         this.timedItemSettingsClickListener = timedItemSettingsClickListener;
     }
 
+    public interface RefreshTimedItemsHook {
+        void refreshTimedItems();
+    }
+
+    public void setRefreshTimedItemsHook(RefreshTimedItemsHook refreshTimedItemsHook) {
+        this.refreshTimedItemsHook = refreshTimedItemsHook;
+    }
+
     @NonNull
     @Override
     public DayRowViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -76,7 +88,6 @@ public class DayViewAdapter extends RecyclerView.Adapter<DayViewAdapter.DayRowVi
 
     @Override
     public void onBindViewHolder(@NonNull DayRowViewHolder holder, int position) {
-        Log.d("TESTPRINT", "pos: " + position);
         if (position == 0) {
             bindViewSectionTitle(holder, dailySectionTitle);
         } else if (position < 1 + dailyItems.size()) {
@@ -84,8 +95,11 @@ public class DayViewAdapter extends RecyclerView.Adapter<DayViewAdapter.DayRowVi
             bindViewDailyItem(holder, item);
         } else if (position == 1 + dailyItems.size()) {
             bindViewSectionTitle(holder, timedSectionTitle);
-        } else {
+        } else if (position < 1 + dailyItems.size() + 1 + timedItems.size()) {
             TimedItem item = timedItems.get(position - 1 - dailyItems.size() - 1);
+            bindViewTimedItem(holder, item);
+        } else {
+            TimedItem item = postponedItems.get(position - 1 - dailyItems.size() - 1 - timedItems.size());
             bindViewTimedItem(holder, item);
         }
     }
@@ -160,9 +174,10 @@ public class DayViewAdapter extends RecyclerView.Adapter<DayViewAdapter.DayRowVi
         holder.checkBox.setChecked(timedItem.isCompleted());
         holder.checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
             timedItem.setCompleted(isChecked);
-            updateCheckTimedItem(timedItem, holder);
             AppDatabase db = AppDatabase.getDatabase(holder.itemView.getContext());
             db.timedItemDao().update(timedItem);   // update in database
+            updateCheckTimedItem(timedItem, holder);
+            refreshTimedItemsHook.refreshTimedItems();
         });
 
         holder.dragHandle.setVisibility(View.GONE);
@@ -202,7 +217,7 @@ public class DayViewAdapter extends RecyclerView.Adapter<DayViewAdapter.DayRowVi
 
     @Override
     public int getItemCount() {
-        return 1 + dailyItems.size() + 1 + timedItems.size();
+        return 1 + dailyItems.size() + 1 + timedItems.size() + postponedItems.size();
     }
 
     static class DayRowViewHolder extends RecyclerView.ViewHolder {

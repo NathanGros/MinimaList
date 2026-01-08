@@ -20,6 +20,7 @@ import com.bignat.minima_list.day_view.day_sections.DaySectionTitle;
 import com.bignat.minima_list.day_view.day_sections.daily_section.DailyItem;
 import com.bignat.minima_list.day_view.day_sections.timed_section.TimedItem;
 
+import java.util.Calendar;
 import java.util.List;
 
 public class DayViewAdapter extends RecyclerView.Adapter<DayViewAdapter.DayRowViewHolder> {
@@ -132,6 +133,8 @@ public class DayViewAdapter extends RecyclerView.Adapter<DayViewAdapter.DayRowVi
         holder.checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
             dailyItem.setCompleted(isChecked);
             updateCheckDailyItem(dailyItem, holder);
+            Calendar now = Calendar.getInstance();
+            dailyItem.setLastTimeCompleted(now.getTime());
             AppDatabase db = AppDatabase.getDatabase(holder.itemView.getContext());
             db.dailyItemDao().update(dailyItem);   // update in database
         });

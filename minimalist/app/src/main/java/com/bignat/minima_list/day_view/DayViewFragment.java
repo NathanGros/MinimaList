@@ -146,6 +146,21 @@ public class DayViewFragment extends Fragment {
         postponedItems = timedItemDao.getAllPostponed(viewDateStart.getTime());
         adapter = new DayViewAdapter(dailyItems, timedItems, postponedItems);
 
+        // Uncheck daily items on day change
+        for (DailyItem item: dailyItems) {
+            if (!item.isCompleted())
+                continue;
+            Calendar lastCompleted = Calendar.getInstance();
+            lastCompleted.setTime(item.getLastTimeCompleted());
+            if (
+                    lastCompleted.get(Calendar.YEAR) == (viewDate.get(Calendar.YEAR))
+                    && lastCompleted.get(Calendar.MONTH) == (viewDate.get(Calendar.MONTH))
+                    && lastCompleted.get(Calendar.DAY_OF_MONTH) == (viewDate.get(Calendar.DAY_OF_MONTH))
+            )
+                continue;
+            item.setCompleted(false);
+        }
+
         // RecyclerView
         recyclerView = view.findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));

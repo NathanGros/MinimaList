@@ -3,6 +3,7 @@ package com.bignat.minima_list.day_view.day_sections.event_section;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -61,11 +62,13 @@ public class EditEventItemBottomSheet extends BottomSheetDialogFragment {
         // Get view items
         super.onViewCreated(view, savedInstanceState);
         EditText titleEdit = view.findViewById(R.id.titleEdit);
+        CheckBox optionalCheck = view.findViewById(R.id.optionalCheck);
         EditText startDateInput = view.findViewById(R.id.eventStartDate);
         EditText startTimeInput = view.findViewById(R.id.eventStartTime);
         EditText endDateInput = view.findViewById(R.id.eventEndDate);
         EditText endTimeInput = view.findViewById(R.id.eventEndTime);
-        CheckBox optionalCheck = view.findViewById(R.id.optionalCheck);
+        CheckBox repeatCheck = view.findViewById(R.id.repeatCheck);
+        EditText repeatNbDaysInput = view.findViewById(R.id.nbDaysRepeat);
         Button deleteButton = view.findViewById(R.id.deleteButton);
         Button cancelButton = view.findViewById(R.id.cancelButton);
         Button saveButton = view.findViewById(R.id.saveButton);
@@ -80,13 +83,28 @@ public class EditEventItemBottomSheet extends BottomSheetDialogFragment {
 
         // Set default values
         titleEdit.setText(eventItem.getTitle());
+        optionalCheck.setChecked(eventItem.isOptional());
         DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.MEDIUM);
         DateFormat timeFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
         startDateInput.setText(dateFormat.format(startDate));
         startTimeInput.setText(timeFormat.format(startDate));
         endDateInput.setText(dateFormat.format(endDate));
         endTimeInput.setText(timeFormat.format(endDate));
-        optionalCheck.setChecked(eventItem.isOptional());
+        repeatCheck.setChecked(eventItem.isRepeat());
+        repeatNbDaysInput.setText(String.valueOf(eventItem.getNbDaysRepeat()));
+        if (eventItem.isRepeat()) {
+            repeatNbDaysInput.setVisibility(View.VISIBLE);
+        } else {
+            repeatNbDaysInput.setVisibility(View.GONE);
+        }
+
+        repeatCheck.setOnClickListener(v -> {
+            if (repeatCheck.isChecked()) {
+                repeatNbDaysInput.setVisibility(View.VISIBLE);
+            } else {
+                repeatNbDaysInput.setVisibility(View.GONE);
+            }
+        });
 
         // Edit fields
         startDateInput.setOnClickListener(v -> {
@@ -167,11 +185,22 @@ public class EditEventItemBottomSheet extends BottomSheetDialogFragment {
             if (eventEnd.compareTo(eventStart) < 0) {
                 endDateInput.setError("End is before start");
                 endTimeInput.setError("End is before start");
+            } else if (repeatNbDaysInput.getText().toString().isEmpty()) {
+                repeatNbDaysInput.setError("Required");
             } else {
                 eventItem.setTitle(titleEdit.getText().toString().trim());
+                eventItem.setOptional(optionalCheck.isChecked());
                 eventItem.setStartDate(eventStart);
                 eventItem.setEndDate(eventEnd);
-                eventItem.setOptional(optionalCheck.isChecked());
+                eventItem.setRepeat(repeatCheck.isChecked());
+                int nbDaysRepeatInt;
+                try {
+                    nbDaysRepeatInt = Integer.parseInt(repeatNbDaysInput.getText().toString());
+                    eventItem.setNbDaysRepeat(nbDaysRepeatInt);
+                }
+                catch (NumberFormatException e) {
+                    repeatNbDaysInput.setError("Error");
+                }
                 parentFragment.getEventItemDao().update(eventItem);
                 parentFragment.refreshEventItems();
                 dismiss();

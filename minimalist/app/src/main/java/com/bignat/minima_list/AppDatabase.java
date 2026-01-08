@@ -19,7 +19,7 @@ import com.bignat.minima_list.timeless_lists.timeless_list.TimelessList;
 import com.bignat.minima_list.timeless_lists.timeless_list.TimelessListDao;
 import com.bignat.minima_list.timeless_lists.timeless_list.timeless_item.TimelessItem;
 
-@Database(entities = {TimelessItem.class, TimelessList.class, DailyItem.class, TimedItem.class, EventItem.class}, version = 7)
+@Database(entities = {TimelessItem.class, TimelessList.class, DailyItem.class, TimedItem.class, EventItem.class}, version = 8)
 @TypeConverters({DateConverter.class})
 public abstract class AppDatabase extends RoomDatabase {
     public abstract TimelessListDao timelessListDao();

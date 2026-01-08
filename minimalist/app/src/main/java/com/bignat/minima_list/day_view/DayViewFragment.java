@@ -25,6 +25,8 @@ import com.bignat.minima_list.R;
 import com.bignat.minima_list.day_view.day_sections.daily_section.DailyItem;
 import com.bignat.minima_list.day_view.day_sections.daily_section.DailyItemDao;
 import com.bignat.minima_list.day_view.day_sections.daily_section.EditDailyItemBottomSheet;
+import com.bignat.minima_list.day_view.day_sections.event_section.EventItem;
+import com.bignat.minima_list.day_view.day_sections.event_section.EventItemDao;
 import com.bignat.minima_list.day_view.day_sections.timed_section.EditTimedItemBottomSheet;
 import com.bignat.minima_list.day_view.day_sections.timed_section.TimedItem;
 import com.bignat.minima_list.day_view.day_sections.timed_section.TimedItemDao;
@@ -49,8 +51,10 @@ public class DayViewFragment extends Fragment {
     private List<DailyItem> dailyItems;
     private List<TimedItem> timedItems;
     private List<TimedItem> postponedItems;
+    private List<EventItem> eventItems;
     private DailyItemDao dailyItemDao;
     private TimedItemDao timedItemDao;
+    private EventItemDao eventItemDao;
     private FloatingActionButton addItemButton;
     private FloatingActionButton editModeButton;
 
@@ -72,12 +76,20 @@ public class DayViewFragment extends Fragment {
         return postponedItems;
     }
 
+    public List<EventItem> getEventItems() {
+        return eventItems;
+    }
+
     public DailyItemDao getDailyItemDao() {
         return dailyItemDao;
     }
 
     public TimedItemDao getTimedItemDao() {
         return timedItemDao;
+    }
+
+    public EventItemDao getEventItemDao() {
+        return eventItemDao;
     }
 
     @Override
@@ -113,6 +125,7 @@ public class DayViewFragment extends Fragment {
 
                         refreshDate();
                         refreshTimedItems();
+                        refreshEventItems();
                     },
                     cal.get(Calendar.YEAR),
                     cal.get(Calendar.MONTH),
@@ -129,12 +142,14 @@ public class DayViewFragment extends Fragment {
             refreshDate();
             dateTitle.setText(DateFormat.getDateInstance(DateFormat.MEDIUM).format(viewDate.getTime()));
             refreshTimedItems();
+            refreshEventItems();
         });
         dateNextButton.setOnClickListener(v -> {
             viewDate.add(Calendar.DAY_OF_MONTH, 1);
             refreshDate();
             dateTitle.setText(DateFormat.getDateInstance(DateFormat.MEDIUM).format(viewDate.getTime()));
             refreshTimedItems();
+            refreshEventItems();
         });
 
         // Read database
@@ -144,7 +159,9 @@ public class DayViewFragment extends Fragment {
         timedItemDao = db.timedItemDao();
         timedItems = timedItemDao.getAllByDay(viewDateStart.getTime(), viewDateEnd.getTime());
         postponedItems = timedItemDao.getAllPostponed(viewDateStart.getTime());
-        adapter = new DayViewAdapter(dailyItems, timedItems, postponedItems);
+        eventItemDao = db.eventItemDao();
+        eventItems = eventItemDao.getAllByDay(viewDateStart.getTime(), viewDateEnd.getTime());
+        adapter = new DayViewAdapter(dailyItems, timedItems, postponedItems, eventItems);
 
         // Uncheck daily items on day change
         for (DailyItem item: dailyItems) {
@@ -369,6 +386,12 @@ public class DayViewFragment extends Fragment {
         timedItems.addAll(timedItemDao.getAllByDay(viewDateStart.getTime(), viewDateEnd.getTime()));
         postponedItems.clear();
         postponedItems.addAll(timedItemDao.getAllPostponed(viewDateStart.getTime()));
+        adapter.notifyDataSetChanged();
+    }
+
+    public void refreshEventItems() {
+        eventItems.clear();
+        eventItems = eventItemDao.getAllByDay(viewDateStart.getTime(), viewDateEnd.getTime());
         adapter.notifyDataSetChanged();
     }
 

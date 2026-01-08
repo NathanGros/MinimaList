@@ -20,6 +20,7 @@ import com.bignat.minima_list.AppDatabase;
 import com.bignat.minima_list.R;
 import com.bignat.minima_list.day_view.day_sections.DaySectionTitle;
 import com.bignat.minima_list.day_view.day_sections.daily_section.DailyItem;
+import com.bignat.minima_list.day_view.day_sections.event_section.EventItem;
 import com.bignat.minima_list.day_view.day_sections.timed_section.TimedItem;
 
 import java.util.Calendar;
@@ -28,9 +29,11 @@ import java.util.List;
 public class DayViewAdapter extends RecyclerView.Adapter<DayViewAdapter.DayRowViewHolder> {
     DaySectionTitle dailySectionTitle;
     DaySectionTitle timedSectionTitle;
+    DaySectionTitle eventSectionTitle;
     private List<DailyItem> dailyItems;
     private List<TimedItem> timedItems;
     private List<TimedItem> postponedItems;
+    private List<EventItem> eventItems;
     private OnDailyItemSettingsClickListener dailyItemSettingsClickListener;
     private OnTimedItemSettingsClickListener timedItemSettingsClickListener;
     private RefreshTimedItemsHook refreshTimedItemsHook;
@@ -39,13 +42,16 @@ public class DayViewAdapter extends RecyclerView.Adapter<DayViewAdapter.DayRowVi
     public DayViewAdapter(
             List<DailyItem> dailyItems,
             List<TimedItem> timedItems,
-            List<TimedItem> postponedItems
+            List<TimedItem> postponedItems,
+            List<EventItem> eventItems
     ) {
         dailySectionTitle = new DaySectionTitle("Daily");
         timedSectionTitle = new DaySectionTitle("To do");
+        eventSectionTitle = new DaySectionTitle("Events");
         this.dailyItems = dailyItems;
         this.timedItems = timedItems;
         this.postponedItems = postponedItems;
+        this.eventItems = eventItems;
         this.isEditMode = false;
     }
 
@@ -91,20 +97,25 @@ public class DayViewAdapter extends RecyclerView.Adapter<DayViewAdapter.DayRowVi
 
     @Override
     public void onBindViewHolder(@NonNull DayRowViewHolder holder, int position) {
-        if (position == 0) {
+        if (position < 1) {
             bindViewSectionTitle(holder, dailySectionTitle);
         } else if (position < 1 + dailyItems.size()) {
             DailyItem item = dailyItems.get(position - 1);
             bindViewDailyItem(holder, item);
-        } else if (position == 1 + dailyItems.size()) {
+        } else if (position < 1 + dailyItems.size() + 1) {
             bindViewSectionTitle(holder, timedSectionTitle);
         } else if (position < 1 + dailyItems.size() + 1 + timedItems.size()) {
             TimedItem item = timedItems.get(position - 1 - dailyItems.size() - 1);
             bindViewTimedItem(holder, item);
-        } else {
+        } else if (position < 1 + dailyItems.size() + 1 + timedItems.size() + postponedItems.size()) {
             TimedItem item = postponedItems.get(position - 1 - dailyItems.size() - 1 - timedItems.size());
             bindViewTimedItem(holder, item);
             holder.title.setTextColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.text_postponed_item));
+        } else if (position < 1 + dailyItems.size() + 1 + timedItems.size() + postponedItems.size() + 1) {
+            bindViewSectionTitle(holder, eventSectionTitle);
+        } else {
+            EventItem item = eventItems.get(position - 1 - dailyItems.size() - 1 - timedItems.size() - postponedItems.size() - 1);
+            bindViewEventItem(holder, item);
         }
     }
 
@@ -204,6 +215,33 @@ public class DayViewAdapter extends RecyclerView.Adapter<DayViewAdapter.DayRowVi
         });
     }
 
+    private void bindViewEventItem(DayRowViewHolder holder, EventItem eventItem) {
+        holder.title.setText(eventItem.getTitle());
+        holder.title.setTextSize(18f);
+        holder.title.setTextColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.text_normal));
+        holder.title.setGravity(Gravity.CENTER_VERTICAL);
+
+        if (eventItem.isOptional()) {
+            holder.title.setTypeface(null, Typeface.ITALIC);
+        } else {
+            holder.title.setTypeface(null, Typeface.NORMAL);
+        }
+
+        holder.checkBox.setVisibility(View.GONE);
+
+        holder.dragHandle.setVisibility(View.GONE);
+
+        if (isEditMode) {
+            holder.settingsButton.setVisibility(View.VISIBLE);
+        } else {
+            holder.settingsButton.setVisibility(View.GONE);
+        }
+
+//        holder.settingsButton.setOnClickListener(v -> {
+//            timedItemSettingsClickListener.onTimedItemSettingsClick(timedItem);
+//        });
+    }
+
     private void updateCheckDailyItem(DailyItem dailyItem, DayRowViewHolder holder) {
         if (dailyItem.isCompleted()) {
             holder.title.setAlpha(0.5f);
@@ -226,7 +264,7 @@ public class DayViewAdapter extends RecyclerView.Adapter<DayViewAdapter.DayRowVi
 
     @Override
     public int getItemCount() {
-        return 1 + dailyItems.size() + 1 + timedItems.size() + postponedItems.size();
+        return 1 + dailyItems.size() + 1 + timedItems.size() + postponedItems.size() + 1 + eventItems.size();
     }
 
     static class DayRowViewHolder extends RecyclerView.ViewHolder {

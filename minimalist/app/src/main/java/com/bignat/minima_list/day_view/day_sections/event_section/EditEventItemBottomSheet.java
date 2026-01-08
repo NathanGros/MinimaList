@@ -162,13 +162,20 @@ public class EditEventItemBottomSheet extends BottomSheetDialogFragment {
         });
 
         saveButton.setOnClickListener(v -> {
-            eventItem.setTitle(titleEdit.getText().toString().trim());
-            eventItem.setStartDate(selectedStartDateTime.getTime());
-            eventItem.setEndDate(selectedEndDateTime.getTime());
-            eventItem.setOptional(optionalCheck.isChecked());
-            parentFragment.getEventItemDao().update(eventItem);
-            parentFragment.refreshEventItems();
-            dismiss();
+            Date eventStart = selectedStartDateTime.getTime();
+            Date eventEnd = selectedEndDateTime.getTime();
+            if (eventEnd.compareTo(eventStart) < 0) {
+                endDateInput.setError("End is before start");
+                endTimeInput.setError("End is before start");
+            } else {
+                eventItem.setTitle(titleEdit.getText().toString().trim());
+                eventItem.setStartDate(eventStart);
+                eventItem.setEndDate(eventEnd);
+                eventItem.setOptional(optionalCheck.isChecked());
+                parentFragment.getEventItemDao().update(eventItem);
+                parentFragment.refreshEventItems();
+                dismiss();
+            }
         });
 
         cancelButton.setOnClickListener(v -> {

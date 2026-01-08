@@ -447,17 +447,22 @@ public class DayViewFragment extends Fragment {
                         // Add to list
                         Date eventStart = selectedEventStartDateTime.getTime();
                         Date eventEnd = selectedEventEndDateTime.getTime();
-                        EventItem newItem = new EventItem(title, eventStart, eventEnd);
+                        if (eventEnd.compareTo(eventStart) < 0) {
+                            eventEndDateInput.setError("End is before start");
+                            eventEndTimeInput.setError("End is before start");
+                        } else {
+                            EventItem newItem = new EventItem(title, eventStart, eventEnd);
 
-                        long newId = eventItemDao.insert(newItem);
-                        newItem.id = (int) newId;
+                            long newId = eventItemDao.insert(newItem);
+                            newItem.id = (int) newId;
 
-                        refreshEventItems();
-                        int index = eventItems.indexOf(newItem);
-                        if (index != -1)
-                            recyclerView.scrollToPosition(1 + dailyItems.size() + 1 + timedItems.size() + postponedItems.size() + index);
+                            refreshEventItems();
+                            int index = eventItems.indexOf(newItem);
+                            if (index != -1)
+                                recyclerView.scrollToPosition(1 + dailyItems.size() + 1 + timedItems.size() + postponedItems.size() + index);
 
-                        dialog.dismiss();
+                            dialog.dismiss();
+                        }
                         break;
                     }
                 }

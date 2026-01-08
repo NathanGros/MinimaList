@@ -162,6 +162,7 @@ public class DayViewFragment extends Fragment {
         postponedItems = timedItemDao.getAllPostponed(viewDateStart.getTime());
         eventItemDao = db.eventItemDao();
         eventItems = eventItemDao.getAllByDay(viewDateStart.getTime(), viewDateEnd.getTime());
+        addRepeatingEvents();
         adapter = new DayViewAdapter(dailyItems, timedItems, postponedItems, eventItems);
 
         // Uncheck daily items on day change
@@ -503,6 +504,15 @@ public class DayViewFragment extends Fragment {
         sheet.show(getParentFragmentManager(), "edit_event");
     }
 
+    public void addRepeatingEvents() {
+        List<EventItem> repeatingEvents = eventItemDao.getRepeatCandidates(viewDateEnd.getTime());
+        for (EventItem repeatingEvent: repeatingEvents) {
+            long diffDays = (viewDateStart.getTimeInMillis() - repeatingEvent.startDate.getTime()) / 86400000;
+            if (diffDays % repeatingEvent.nbDaysRepeat == 0)
+                eventItems.add(repeatingEvent);
+        }
+    }
+
     public void refreshDate() {
         viewDateStart = Calendar.getInstance();
         viewDateStart.setTime(viewDate.getTime());
@@ -526,6 +536,7 @@ public class DayViewFragment extends Fragment {
     public void refreshEventItems() {
         eventItems.clear();
         eventItems.addAll(eventItemDao.getAllByDay(viewDateStart.getTime(), viewDateEnd.getTime()));
+        addRepeatingEvents();
         adapter.notifyDataSetChanged();
     }
 

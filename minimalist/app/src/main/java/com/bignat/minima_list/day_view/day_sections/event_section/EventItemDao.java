@@ -14,8 +14,11 @@ public interface EventItemDao {
     @Query("SELECT * FROM EventItem ORDER BY startDate ASC")
     List<EventItem> getAll();
 
-    @Query("SELECT * FROM EventItem WHERE startDate < :dayEnd AND endDate >= :dayStart ORDER BY startDate ASC")
+    @Query("SELECT * FROM EventItem WHERE repeat = 0 AND startDate < :dayEnd AND endDate >= :dayStart ORDER BY startDate ASC")
     List<EventItem> getAllByDay(Date dayStart, Date dayEnd);
+
+    @Query("SELECT * FROM EventItem WHERE repeat = 1 AND startDate < :dayEnd ORDER BY startDate ASC")
+    List<EventItem> getRepeatCandidates(Date dayEnd);
 
     @Insert
     long insert(EventItem eventItem);

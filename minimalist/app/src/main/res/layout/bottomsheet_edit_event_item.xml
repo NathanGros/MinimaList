@@ -1,91 +1,145 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="24dp"
-    android:background="@drawable/bottomsheet_bg" >
+    android:layout_height="wrap_content">
 
-    <EditText
-        android:id="@+id/titleEdit"
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="5dp"
-        android:textColor="@color/text_normal"
-        android:textSize="22sp"/>
+        android:layout_height="match_parent"
+        android:padding="24dp"
+        android:background="@drawable/bottomsheet_bg" >
 
-    <EditText
-        android:id="@+id/eventStartDate"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Start date"
-        android:focusable="false"
-        android:clickable="true" />
+        <EditText
+            android:id="@+id/titleEdit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:textColor="@color/text_normal"
+            android:textSize="22sp"/>
 
-    <EditText
-        android:id="@+id/eventStartTime"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Start time"
-        android:focusable="false"
-        android:clickable="true" />
+        <CheckBox
+            android:id="@+id/optionalCheck"
+            android:text="  Optional"
+            style="@style/NoTintCheckBox"
+            android:button="@drawable/checkbox_selector"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:textColor="@color/text_normal"
+            android:textSize="16sp" />
 
-    <EditText
-        android:id="@+id/eventEndDate"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="End date"
-        android:focusable="false"
-        android:clickable="true" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Event start"
+            android:textSize="22sp"
+            android:textColor="@color/text_normal"
+            android:gravity="center"
+            android:paddingTop="50dp"/>
 
-    <EditText
-        android:id="@+id/eventEndTime"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="End time"
-        android:focusable="false"
-        android:clickable="true" />
+        <EditText
+            android:id="@+id/eventStartDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Start date"
+            android:focusable="false"
+            android:clickable="true" />
 
-    <CheckBox
-        android:id="@+id/optionalCheck"
-        android:text="  Optional"
-        style="@style/NoTintCheckBox"
-        android:button="@drawable/checkbox_selector"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="5dp"
-        android:textColor="@color/text_normal"
-        android:textSize="16sp" />
+        <EditText
+            android:id="@+id/eventStartTime"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Start time"
+            android:focusable="false"
+            android:clickable="true" />
 
-    <Button
-        android:id="@+id/deleteButton"
-        android:text="Delete"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="5dp"
-        android:textColor="@color/text_bad"
-        android:textSize="18sp"
-        app:rippleColor="@color/ripple_color" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Event end"
+            android:textSize="22sp"
+            android:textColor="@color/text_normal"
+            android:gravity="center"
+            android:paddingTop="50dp"/>
 
-    <Button
-        android:id="@+id/cancelButton"
-        android:text="Cancel"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="5dp"
-        android:textColor="@color/text_normal"
-        android:textSize="18sp"
-        app:rippleColor="@color/ripple_color" />
+        <EditText
+            android:id="@+id/eventEndDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="End date"
+            android:focusable="false"
+            android:clickable="true" />
 
-    <Button
-        android:id="@+id/saveButton"
-        android:text="Save"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="5dp"
-        android:textColor="@color/text_normal"
-        android:textSize="18sp"
-        app:rippleColor="@color/ripple_color" />
+        <EditText
+            android:id="@+id/eventEndTime"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="End time"
+            android:focusable="false"
+            android:clickable="true" />
 
-</LinearLayout>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Repeat"
+            android:textSize="22sp"
+            android:textColor="@color/text_normal"
+            android:gravity="center"
+            android:paddingTop="50dp"/>
+
+        <CheckBox
+            android:id="@+id/repeatCheck"
+            android:text="  Repeat"
+            style="@style/NoTintCheckBox"
+            android:button="@drawable/checkbox_selector"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:textColor="@color/text_normal"
+            android:textSize="16sp" />
+
+        <EditText
+            android:id="@+id/nbDaysRepeat"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="50dp"
+            android:hint="Repeat frequency (days)"
+            android:focusable="true"
+            android:clickable="true" />
+
+        <Button
+            android:id="@+id/deleteButton"
+            android:text="Delete"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:textColor="@color/text_bad"
+            android:textSize="18sp"
+            app:rippleColor="@color/ripple_color" />
+
+        <Button
+            android:id="@+id/cancelButton"
+            android:text="Cancel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:textColor="@color/text_normal"
+            android:textSize="18sp"
+            app:rippleColor="@color/ripple_color" />
+
+        <Button
+            android:id="@+id/saveButton"
+            android:text="Save"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:textColor="@color/text_normal"
+            android:textSize="18sp"
+            app:rippleColor="@color/ripple_color" />
+
+    </LinearLayout>
+
+</androidx.core.widget.NestedScrollView>

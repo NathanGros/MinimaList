@@ -507,7 +507,13 @@ public class DayViewFragment extends Fragment {
     public void addRepeatingEvents() {
         List<EventItem> repeatingEvents = eventItemDao.getRepeatCandidates(viewDateEnd.getTime());
         for (EventItem repeatingEvent: repeatingEvents) {
-            long diffDays = (viewDateStart.getTimeInMillis() - repeatingEvent.startDate.getTime()) / 86400000;
+            Calendar repeatingEventDayStart = Calendar.getInstance();
+            repeatingEventDayStart.setTime(repeatingEvent.startDate);
+            repeatingEventDayStart.set(Calendar.HOUR_OF_DAY, 0);
+            repeatingEventDayStart.set(Calendar.MINUTE, 0);
+            repeatingEventDayStart.set(Calendar.SECOND, 0);
+            repeatingEventDayStart.set(Calendar.MILLISECOND, 0);
+            long diffDays = (viewDateStart.getTimeInMillis() - repeatingEventDayStart.getTime().getTime()) / 86400000;
             if (diffDays % repeatingEvent.nbDaysRepeat == 0)
                 eventItems.add(repeatingEvent);
         }

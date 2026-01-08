@@ -36,6 +36,7 @@ public class DayViewAdapter extends RecyclerView.Adapter<DayViewAdapter.DayRowVi
     private List<EventItem> eventItems;
     private OnDailyItemSettingsClickListener dailyItemSettingsClickListener;
     private OnTimedItemSettingsClickListener timedItemSettingsClickListener;
+    private OnEventItemSettingsClickListener eventItemSettingsClickListener;
     private RefreshTimedItemsHook refreshTimedItemsHook;
     private boolean isEditMode;
 
@@ -78,6 +79,14 @@ public class DayViewAdapter extends RecyclerView.Adapter<DayViewAdapter.DayRowVi
 
     public void setOnTimedItemSettingsClickListener(OnTimedItemSettingsClickListener timedItemSettingsClickListener) {
         this.timedItemSettingsClickListener = timedItemSettingsClickListener;
+    }
+
+    public interface OnEventItemSettingsClickListener {
+        void onEventItemSettingsClick(EventItem eventItem);
+    }
+
+    public void setOnEventItemSettingsClickListener(OnEventItemSettingsClickListener eventItemSettingsClickListener) {
+        this.eventItemSettingsClickListener = eventItemSettingsClickListener;
     }
 
     public interface RefreshTimedItemsHook {
@@ -237,9 +246,9 @@ public class DayViewAdapter extends RecyclerView.Adapter<DayViewAdapter.DayRowVi
             holder.settingsButton.setVisibility(View.GONE);
         }
 
-//        holder.settingsButton.setOnClickListener(v -> {
-//            timedItemSettingsClickListener.onTimedItemSettingsClick(timedItem);
-//        });
+        holder.settingsButton.setOnClickListener(v -> {
+            eventItemSettingsClickListener.onEventItemSettingsClick(eventItem);
+        });
     }
 
     private void updateCheckDailyItem(DailyItem dailyItem, DayRowViewHolder holder) {

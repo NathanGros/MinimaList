@@ -25,6 +25,7 @@ import com.bignat.minima_list.R;
 import com.bignat.minima_list.day_view.day_sections.daily_section.DailyItem;
 import com.bignat.minima_list.day_view.day_sections.daily_section.DailyItemDao;
 import com.bignat.minima_list.day_view.day_sections.daily_section.EditDailyItemBottomSheet;
+import com.bignat.minima_list.day_view.day_sections.event_section.EditEventItemBottomSheet;
 import com.bignat.minima_list.day_view.day_sections.event_section.EventItem;
 import com.bignat.minima_list.day_view.day_sections.event_section.EventItemDao;
 import com.bignat.minima_list.day_view.day_sections.timed_section.EditTimedItemBottomSheet;
@@ -188,6 +189,9 @@ public class DayViewFragment extends Fragment {
 
         // Open timed item settings
         adapter.setOnTimedItemSettingsClickListener(this::openTimedItemSettings);
+
+        // Open event item settings
+        adapter.setOnEventItemSettingsClickListener(this::openEventItemSettings);
 
         // Refresh timed items hook
         adapter.setRefreshTimedItemsHook(this::refreshTimedItems);
@@ -367,6 +371,14 @@ public class DayViewFragment extends Fragment {
     private void openTimedItemSettings(TimedItem timedItem) {
         EditTimedItemBottomSheet sheet = new EditTimedItemBottomSheet(timedItem, this);
         sheet.show(getParentFragmentManager(), "edit_timed");
+    }
+
+    /**
+     * Opens the event item settings bottomSheet
+     */
+    private void openEventItemSettings(EventItem eventItem) {
+        EditEventItemBottomSheet sheet = new EditEventItemBottomSheet(eventItem, this);
+        sheet.show(getParentFragmentManager(), "edit_event");
     }
 
     public void refreshDate() {

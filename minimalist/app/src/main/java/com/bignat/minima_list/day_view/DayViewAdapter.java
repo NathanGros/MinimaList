@@ -1,5 +1,6 @@
 package com.bignat.minima_list.day_view;
 
+import android.content.res.ColorStateList;
 import android.graphics.Typeface;
 import android.util.Log;
 import android.view.Gravity;
@@ -12,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bignat.minima_list.AppDatabase;
@@ -102,11 +104,13 @@ public class DayViewAdapter extends RecyclerView.Adapter<DayViewAdapter.DayRowVi
         } else {
             TimedItem item = postponedItems.get(position - 1 - dailyItems.size() - 1 - timedItems.size());
             bindViewTimedItem(holder, item);
+            holder.title.setTextColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.text_postponed_item));
         }
     }
 
     private void bindViewSectionTitle(DayRowViewHolder holder, DaySectionTitle sectionTitle) {
         holder.title.setText(sectionTitle.getSectionTitle());
+        holder.title.setTextColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.text_title));
         holder.title.setAlpha(1f);
         holder.title.setTextSize(22f);
         holder.title.setGravity(Gravity.CENTER);
@@ -119,6 +123,7 @@ public class DayViewAdapter extends RecyclerView.Adapter<DayViewAdapter.DayRowVi
     private void bindViewDailyItem(DayRowViewHolder holder, DailyItem dailyItem) {
         holder.title.setText(dailyItem.getTitle());
         holder.title.setTextSize(18f);
+        holder.title.setTextColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.text_normal));
         holder.title.setGravity(Gravity.CENTER_VERTICAL);
 
         if (dailyItem.isOptional()) {
@@ -164,6 +169,7 @@ public class DayViewAdapter extends RecyclerView.Adapter<DayViewAdapter.DayRowVi
     private void bindViewTimedItem(DayRowViewHolder holder, TimedItem timedItem) {
         holder.title.setText(timedItem.getTitle());
         holder.title.setTextSize(18f);
+        holder.title.setTextColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.text_normal));
         holder.title.setGravity(Gravity.CENTER_VERTICAL);
 
         if (timedItem.isOptional()) {

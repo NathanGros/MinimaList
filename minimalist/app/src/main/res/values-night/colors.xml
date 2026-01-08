@@ -13,6 +13,7 @@
     <color name="text_title">#FFFFFFFF</color>
     <color name="text_bad">#FFFF0000</color>
     <color name="text_unselected">#FF7F7F7F</color>
+    <color name="text_postponed_item">#FFFFDF70</color>
     <color name="ripple_color">#FF292929</color>
     <color name="checkbox">#FFFFFFFF</color>
     <color name="icon">#FFFFFFFF</color>
